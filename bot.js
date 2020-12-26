@@ -25,7 +25,7 @@ bot.on('message', message => {
     // If a command is not present , log the default message
     if (!bot.commands.has(command)) {
         if (command[0] === "!")
-            bot.commands.get("!invalid").execute(message, args);
+            bot.commands.get('!invalid').execute(message, args);
         return;
     }
 
