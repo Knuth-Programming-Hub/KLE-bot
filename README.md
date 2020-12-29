@@ -28,7 +28,7 @@ This bot is built on [node.js](https://nodejs.org/en/). You will need at least n
 -   Having forked the repository, clone the repository to your local machine using the below command in the terminal :
 
 ```
-$ git clone https://github.com/reapedjuggler/KLE-bot.git
+$ git clone https://github.com/Knuth-Programming-Hub/KLE-bot.git
 ```
 
 ### Build and Execute the bot

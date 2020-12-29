@@ -9,16 +9,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reapedjuggler/KLE-bot.git"
+    "url": "git+https://github.com/Knuth-Programming-Hub/KLE-bot.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/reapedjuggler/KLE-bot/issues"
+    "url": "https://github.com/Knuth-Programming-Hub/KLE-bot/issues"
   },
-  "homepage": "https://github.com/reapedjuggler/KLE-bot#readme",
+  "homepage": "https://github.com/Knuth-Programming-Hub/KLE-bot#readme",
   "dependencies": {
     "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "mongoose": "^5.11.8"
   }
 }
