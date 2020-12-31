@@ -1,47 +1,70 @@
 # KLE Discord Bot
 
-This is a chat bot for the KPH Discord Server, built on top of discord.js.
+KLE is a chat bot for the Knuth Programming Hub Discord server.
+The purpose of this bot is to automate various tasks of the Hub and at the same time improve the Competitve Programming culture in the college.
 
-## Setting up the bot
+## Features
 
-This bot is built on [node.js](https://nodejs.org/en/). You will need at least node 12.xx. Check the version on your local machine by running 'node -v' on the terminal.
+-   [x] KPH links
+-   [x] Meetups
 
-### Get the Discord-API Token
+## Future Prospects
 
-1. Go to [Discord Developer Portal](https://discord.com/developers/applications) and login with your Discord Account.
-2. Create a New Application.
-3. Click on Add Bot in the Bot section.
-4. You’ll get your Bot API token under the token title
-5. Copy it and save it in a file named as /.env/ in your project folder.
+-   Meetup Reminders
+-   Linking with [GitHub org](https://github.com/Knuth-Programming-Hub/)
+-   Connecting to Telegram group
+-   Identifying JIIT students
+-   Accpting/Rejecting requests on CF group
+-   Creating link for a particular code
+-   Answering trivial and repeated questions
+-   CodeForces-gitgud
+-   Batch-wise leaderboards
 
-### Add bot to your Test Server
+## How to Get Started
 
-1. Go to OAuth2 section in your application
-2. Select bot in the scopes menu and Administrator in bot permission menu.
-3. A Link will be generated in the scope menu, copy it and paste it in your browser URL tab.
-4. Select your test server in the drop down box...
+-   Follow the steps provided [here](CONTRIBUTING.md#setup).
 
-### Fork and clone this repository
+## Contributing workflow
 
--   Fork this repository using the button in the top-right corner of the page. Refer https://docs.github.com/en/github/getting-started-with-github/fork-a-repo for more details.
+-   You can work on existing [issues](https://github.com/Knuth-Programming-Hub/KLE-bot/issues) or create new issues and work on them.
+-   After completing the steps mentioned in [CONTRIBUTING.md](CONTRIBUTING.md) you have the project up and running. You are right now in _master branch_. You can check your current branch with `git branch`.
+-   Create a new branch `git checkout -b <new branch name>`. You can switch branches with `git checkout <branch name>`
+-   Make changes. Add all the files to staging `git add .`
+-   Commit the changes `git commit -m <commit message>`. Make sure to write relevant commit messages.
+-   Push the changes `git push origin <branch name>`
+-   Make a pull request.
+-   After code review your PR may or may not be merged depending on your changes.
 
--   Having forked the repository, clone the repository to your local machine using the below command in the terminal :
+## Opening an Issue
 
-```
-$ git clone https://github.com/Knuth-Programming-Hub/KLE-bot.git
-```
+Open an issue here: https://github.com/Knuth-Programming-Hub/KLE-bot/issues to...
 
-### Build and Execute the bot
+### Request support
 
-1. Move to the project folder:
+If you have a question about this project, how to use it, or just need clarification about something:
 
-```bash
-    cd KLE-bot
-```
+-   Provide as much context as you can about what you're running into.
+-   Provide project and platform versions (nodejs, npm, etc), depending on what seems relevant. If not, please be ready to provide that information if maintainers ask for it.
 
-2. Run following commands from terminal to install dependencies and run the bot:
+### Report an Error or Bug
 
-```bash
-    npm install
-    npm start
-```
+If you run into an error or bug with the project:
+
+-   Include _reproduction steps_ that someone else can follow to recreate the bug or error on their own.
+-   Provide project and platform versions (nodejs, npm, etc), depending on what seems relevant. If not, please be ready to provide that information if maintainers ask for it.
+
+### Request a Feature
+
+If the project doesn't do something you need or want it to do:
+
+-   Provide as much context as you can about what you're running into.
+-   Please try and be clear about why existing features and alternatives would not work for you.
+
+## Usage
+
+Use `!help` to get the list of available commands.
+To get more details about a specific command you can type `!help <command-name>`
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
