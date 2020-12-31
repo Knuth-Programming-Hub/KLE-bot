@@ -16,7 +16,7 @@ bot.on('ready', async () => {
         .then(files => {
             for (let file of files) {
                 let filePath = String(file);
-                filePath = './' + filePath.substring(filePath.lastIndexOf('commands\\'));
+                filePath = './' + filePath.substring(filePath.lastIndexOf('commands\\')); // use 'commands\' for an OS other than Windows
                 commandFiles.push(filePath);
             }
 
@@ -30,7 +30,7 @@ bot.on('ready', async () => {
 
 bot.on('message', message => {
 
-    const args = message.content.trim().split(/ +/);
+    const args = message.content.trim().split(/\r\n|\r|\n| +/);
     const command = args.shift().toLowerCase();
 
     // If a command is not present , log the default message    

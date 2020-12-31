@@ -4,7 +4,7 @@ const Event = require('../../models/event.model')
 
 const getDate = (date, time) => {
     
-    const dateArr = date.split('-');
+    const dateArr = date.split(/[-/]/);
     dateArr[1] = String(parseInt(dateArr[1])-1);
     dateArr.reverse();
     const timeArr = time.split(':');
@@ -31,17 +31,16 @@ const compute = args => {
     eventObj.venue = "";
 
     let flag = 0;
-    for(let i = 5; i < args.length; i += 1)
-    {
-        if(!flag && args[i] === 'venue:')
-        {
+    for(let i = 5; i < args.length; i += 1) {
+        
+        if(!flag && args[i] === 'venue:') {
             flag = 1;
             continue;   
         }
 
-        if (!flag)
-        {
-            if (eventObj.title.length)
+        if(!flag) {
+            
+            if(eventObj.title.length)
                 eventObj.title += ' ';
 
             eventObj.title += args[i];
@@ -50,17 +49,15 @@ const compute = args => {
             eventObj.venue += args[i];    
     }
 
-    console.log(eventObj);
-
     return flag ? true : false;
 }
 
 module.exports = {
     name: '!addevent',
+    permission: '*',
     description: 'Add an event',
+    usage: ' ```!addevent\n\nFormat:\ndate: DD/MM/YYYY\ntime: HH:MM (24 hr)\ntitle: ...\nvenue: ...```',
     execute: async (message, args) => {
-
-        console.log(args);
 
         if (!message.member.hasPermission('ADMINISTRATOR')) {
             message.channel.send('You do not have permission to run this command.')
@@ -68,7 +65,7 @@ module.exports = {
         }
 
         if (!compute(args)) {
-            message.channel.send('Wrong format!');
+            message.channel.send('Wrong format! Use !help addevent to know about usage.');
             return;
         }
         
@@ -81,7 +78,6 @@ module.exports = {
                 await event.save()
                     .then(doc => {
                         str = 'Event Successfully Added! 😀';
-                        console.log(doc);
                     })
                     .catch(err => {
                         str = 'There was some error. 🙁';

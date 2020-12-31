@@ -29,6 +29,7 @@ const compute = (eventObject) => {
 module.exports = {
     name: '!nextevent',
     description: 'Show next event',
+    usage: ' ```!nextevent\n\nType the command to view the next upcoming event.```',
     execute: async (message, args) => {
 
         await mongo().then(async mongoose => {
