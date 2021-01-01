@@ -1,6 +1,6 @@
 # Contributing to the bot
 
-Contributions are always welcome, no matter how large or small!
+Contributions are always welcome, no matter how big or small!
 
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
 
@@ -14,7 +14,7 @@ This project and everyone participating in it is governed by our [Code of Conduc
 
 -   Fork this repository using the button in the top-right corner of the page. Refer https://docs.github.com/en/github/getting-started-with-github/fork-a-repo for more details.
 
--   Having forked the repository, clone the repository to your local machine using the below command in the terminal:
+-   Having forked the repository, clone the repository to your local machine by using the below command in your terminal:
 
 ```
 $ git clone https://github.com/YOUR-GITHUB-USERNAME/KLE-bot
@@ -31,7 +31,7 @@ $ cd KLE-bot
 <details>
     <summary> <strong> Install Node.js </strong> </summary>
 
--   This bot is built on node.js. Install it from [here](<(https://nodejs.org/en/)>).
+-   This bot is built on node.js. Install it from [here](https://nodejs.org/en/).
 
 </details>
 
@@ -57,8 +57,8 @@ $ cd KLE-bot
 
 -   Go to OAuth2 section in your application
 -   Select bot in the scopes menu and _Administrator_ in bot permission menu.
--   A Link will be generated in the scope menu, copy it and paste it in your browser URL tab.
--   Select your test server in the drop down box...
+-   A Link will be generated in the scope menu, copy it and paste it in your browser's address bar.
+-   Select your test server from the drop down box...
 
 </details>
 
@@ -94,4 +94,4 @@ mongoPath = "mongodb://localhost:27017/<Your-DB-Name>"
 2. Update the README.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
 3. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
 4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you
-   do not have permission to do that, you may request one of the reviewer to merge it for you.
+   do not have permission to do that, you may request one of the reviewers to merge it for you.
