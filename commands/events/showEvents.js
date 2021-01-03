@@ -35,6 +35,7 @@ const compute = (eventObjects) => {
 module.exports = {
     name: '!showevents',
     description: 'Show all events',
+    usage: ' ```!showevents\n\nType the command to view all the events.```',
     execute: async (message, args) => {
 
         await mongo().then(async mongoose => {
