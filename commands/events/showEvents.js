@@ -14,7 +14,7 @@ const formatDate = (today) => {
   var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
   var yyyy = today.getFullYear();
 
-  const date = mm + "/" + dd + "/" + yyyy;
+  const date = yyyy + "/" + mm + "/" + dd;
   return date;
 };
 
@@ -55,11 +55,11 @@ module.exports = {
             const id = response[index]._id;
             await Event.findByIdAndRemove(id)
               .then((response) => {
-                message.channel.send("Past events deleted successfully! 🔥");
+                console.log("Past events deleted successfully! 🔥");
               })
               .catch((err) => {
                 console.log(err);
-                message.channel.send(
+                console.log(
                   "There was some error in deleting a past event. 🙁"
                 );
               });
