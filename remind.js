@@ -9,9 +9,9 @@ const getDateAndTime = (dateObj) => {
 };
 
 const formatDate = (today) => {
-  var dd = String(today.getDate()).padStart(2, "0");
-  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  var yyyy = today.getFullYear();
+  let dd = String(today.getDate()).padStart(2, "0");
+  let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  let yyyy = today.getFullYear();
 
   const date = yyyy + "/" + mm + "/" + dd;
   return date;
@@ -50,15 +50,15 @@ module.exports = async (bot) => {
       await Event.find()
         .sort("date")
         .then((response) => {
-          events = [];
-          var today = new Date();
+          let events = [];
+          let today = new Date();
           for (let index in response) {
             if (formatDate(response[index].date) === formatDate(today)) {
               events.push(response[index]);
             }
           }
 
-          eventFormatted = compute(events);
+          let eventFormatted = compute(events);
           if (eventFormatted.length) {
             const embed = new MessageEmbed()
               .setTitle("Reminder!")
