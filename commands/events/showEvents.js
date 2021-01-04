@@ -9,6 +9,15 @@ const getDateAndTime = (dateObj) => {
   return [dateObj.substring(4, pos), dateObj.substring(pos)];
 };
 
+const formatDate = (today) => {
+  var dd = String(today.getDate()).padStart(2, "0");
+  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  var yyyy = today.getFullYear();
+
+  const date = mm + "/" + dd + "/" + yyyy;
+  return date;
+};
+
 const compute = (eventObjects) => {
   const events = [];
   for (let index in eventObjects) {
@@ -35,6 +44,27 @@ module.exports = {
   usage: " ```!showevents\n\nType the command to view all the events.```",
   execute: async (message, args) => {
     await mongo().then(async (mongoose) => {
+      await Event.find()
+        .sort("date")
+        .then(async (response) => {
+          var today = new Date();
+          for (let index in response) {
+            if (formatDate(response[index].date) >= formatDate(today)) {
+              continue;
+            }
+            const id = response[index]._id;
+            await Event.findByIdAndRemove(id)
+              .then((response) => {
+                message.channel.send("Past events deleted successfully! 🔥");
+              })
+              .catch((err) => {
+                console.log(err);
+                message.channel.send(
+                  "There was some error in deleting a past event. 🙁"
+                );
+              });
+          }
+        });
       try {
         await Event.find()
           .sort("date")
