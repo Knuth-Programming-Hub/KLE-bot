@@ -42,7 +42,7 @@ bot.on("ready", async () => {
   console.log("The KLE bot is online!");
 });
 
-setInterval(() => remind(bot), 43200000);
+setInterval(() => remind(bot), 3000000);
 
 bot.on("message", (message) => {
   const args = message.content.trim().split(/\r\n|\r|\n| +/);
