@@ -10,8 +10,6 @@ The purpose of this bot is to automate various tasks of the Hub and at the same 
 
 ## Future Prospects
 
--   Meetup Reminders
-
 -   Connecting to the Telegram group
 -   Identifying [JIIT](http://www.jiit.ac.in/) students
 -   Accepting/Rejecting requests on the CF group
