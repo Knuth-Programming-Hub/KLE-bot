@@ -3,11 +3,11 @@ const { join } = require("path");
 require("dotenv").config();
 
 const Discord = require("discord.js");
+const getFiles = require("./getFiles");
+const remind = require("./remind");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
-
-const getFiles = require("./getFiles");
 
 let commandFiles = [];
 
@@ -31,8 +31,6 @@ bot.on("guildMemberAdd", (member) => {
 });
 
 bot.on("ready", async () => {
-  console.log("The KLE bot is online!");
-
   await getFiles("./commands")
     .then((files) => {
       for (const file of files) {
@@ -41,7 +39,10 @@ bot.on("ready", async () => {
       }
     })
     .catch((err) => console.log(err));
+  console.log("The KLE bot is online!");
 });
+
+setInterval(() => remind(bot), 43200000);
 
 bot.on("message", (message) => {
   const args = message.content.trim().split(/\r\n|\r|\n| +/);
