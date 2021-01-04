@@ -8,14 +8,20 @@ const getDateAndTime = (dateObj) => {
   return [dateObj.substring(4, pos), dateObj.substring(pos)];
 };
 
-const formatDate = (today) => {
-  let dd = String(today.getDate()).padStart(2, "0");
-  let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  let yyyy = today.getFullYear();
+const formatDate = (date) => {
+  let dd = String(date.getDate()).padStart(2, "0");
+  let mm = String(date.getMonth() + 1).padStart(2, "0"); //January is 0!
+  let yyyy = date.getFullYear();
 
-  const date = yyyy + "/" + mm + "/" + dd;
-  return date;
+  const resDate = yyyy + "/" + mm + "/" + dd;
+  return resDate;
 };
+
+const diffLessThanHour = (currTime, eventTime) => {
+  let diff = eventTime - currTime;
+  return diff <= 3600000 && diff >= 0 ? true : false;
+};
+
 const compute = (eventObjects) => {
   const events = [];
   for (let index in eventObjects) {
@@ -54,7 +60,11 @@ module.exports = async (bot) => {
           let today = new Date();
           for (let index in response) {
             if (formatDate(response[index].date) === formatDate(today)) {
-              events.push(response[index]);
+              let currTime = today.getTime();
+              let eventTime = response[index].date.getTime();
+              if (diffLessThanHour(currTime, eventTime)) {
+                events.push(response[index]);
+              }
             }
           }
 
@@ -63,7 +73,9 @@ module.exports = async (bot) => {
             const embed = new MessageEmbed()
               .setTitle("Reminder!")
               .setColor(0xff0000)
-              .setDescription("Hello, this is a reminder!")
+              .setDescription(
+                "Hello, the following events are scheduled to occur in less than an hour!"
+              )
               .addFields(eventFormatted);
             channel.send(embed);
           }
