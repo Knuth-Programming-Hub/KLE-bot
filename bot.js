@@ -17,7 +17,6 @@ bot.on("ready", async () => {
   await getFiles("./commands")
     .then((files) => {
       for (const file of files) {
-        console.log(file);
         const command = require(file);
         bot.commands.set(command.name, command);
       }
@@ -45,3 +44,11 @@ bot.on("message", (message) => {
 });
 
 bot.login(process.env.BOT_TOKEN);
+
+// web server
+const http = require("http");
+const server = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end("ok");
+});
+server.listen(3000);

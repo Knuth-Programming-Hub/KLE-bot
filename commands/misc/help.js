@@ -29,7 +29,6 @@ module.exports = {
             // thanks: https://stackoverflow.com/a/423385/9950042
             var filename = filePath.replace(/^.*[\\\/]/, ""); // Get Filename.
             filename = filename.substring(0, filename.length - 3).toLowerCase(); // Remove extension.
-            console.log(args[0], filename);
             if (args[0].toLowerCase() == filename) {
               const command = require(filePath);
               message.channel.send(command.usage);

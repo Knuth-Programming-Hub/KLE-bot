@@ -20,6 +20,9 @@ const eventObj = {
 };
 
 const compute = (args) => {
+  args = args.filter((elem) => elem !== "");
+  args = args.map((elem) => elem.toLowerCase());
+
   if (args[0] !== "date:" || args[2] !== "time:" || args[4] !== "title:")
     return false;
 
