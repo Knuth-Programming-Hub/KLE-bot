@@ -24,11 +24,12 @@ function checkSchedule(args) {
   
   var decidedDay = args[1];
   var decidedTime = args[3];
-  var curDay = new Date().toLocaleDateString();
+  var curDay = new Date().toLocaleDateString(undefined, {timeZone: 'Asia/Kolkata'});
   var curTime = new Date().toLocaleTimeString('en-US', {
     hour12: false,
     hour: "numeric",
-    minute: "numeric"
+    minute: "numeric",
+    timeZone: 'Asia/Kolkata',
   });
 
   if (Date.parse(decidedDay) < Date.parse(curDay)) {
