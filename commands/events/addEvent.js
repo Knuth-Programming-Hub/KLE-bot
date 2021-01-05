@@ -98,8 +98,6 @@ module.exports = {
       return;
     }
 
-    console.log(args);
-
     let str = "";
 
     await mongo().then(async (mongoose) => {
