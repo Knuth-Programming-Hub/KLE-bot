@@ -19,6 +19,32 @@ const eventObj = {
   venue: "",
 };
 
+// A function for checking if the date or time has been already passed or not
+function checkSchedule(args) {
+
+  console.log(args);
+
+  var decidedDay = args[1];
+  var decidedTime = args[3];
+  var curDay = new Date().toLocaleDateString();
+  var curTime = new Date().toLocaleTimeString('en-US', {
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric"
+  });
+
+  if (Date.parse(decidedDay) < Date.parse(curDay)) {
+    return false;
+  }
+
+  if (Date.parse(decidedTime) < Date.parse(curTime)) {
+    return false;
+  }
+
+  return true;
+
+}
+
 const compute = (args) => {
   args = args.filter((elem) => elem !== "");
   args = args.map((elem) => elem.toLowerCase());
@@ -52,8 +78,7 @@ module.exports = {
   name: "!addevent",
   permission: "*",
   description: "Add an event",
-  usage:
-    " ```!addevent\n\nFormat:\ndate: DD/MM/YYYY\ntime: HH:MM (24 hr)\ntitle: ...\nvenue: ...```",
+  usage: " ```!addevent\n\nFormat:\ndate: DD/MM/YYYY\ntime: HH:MM (24 hr)\ntitle: ...\nvenue: ...```",
   execute: async (message, args) => {
     if (!message.member.hasPermission("ADMINISTRATOR")) {
       message.channel.send("You do not have permission to run this command.");
@@ -66,6 +91,15 @@ module.exports = {
       );
       return;
     }
+
+    if (checkSchedule(args) === false) {
+      message.channel.send(
+        "Scheduled Date or Time has already passed, Try creating a valid event"
+      );
+      return;
+    }
+
+    console.log(args);
 
     let str = "";
 
