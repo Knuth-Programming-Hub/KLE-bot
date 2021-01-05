@@ -21,9 +21,7 @@ const eventObj = {
 
 // A function for checking if the date or time has been already passed or not
 function checkSchedule(args) {
-
-  console.log(args);
-
+  
   var decidedDay = args[1];
   var decidedTime = args[3];
   var curDay = new Date().toLocaleDateString();
