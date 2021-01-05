@@ -22,10 +22,10 @@ const eventObj = {
 // A function for checking if the date or time has been already passed or not
 function checkSchedule(args) {
   
-  var decidedDay = args[1];
-  var decidedTime = args[3];
-  var curDay = new Date().toLocaleDateString(undefined, {timeZone: 'Asia/Kolkata'});
-  var curTime = new Date().toLocaleTimeString('en-US', {
+  const decidedDay = args[1];
+  const decidedTime = args[3];
+  const curDay = new Date().toLocaleDateString(undefined, {timeZone: 'Asia/Kolkata'});
+  const curTime = new Date().toLocaleTimeString('en-US', {
     hour12: false,
     hour: "numeric",
     minute: "numeric",
