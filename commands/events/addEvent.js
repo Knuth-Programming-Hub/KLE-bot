@@ -19,6 +19,31 @@ const eventObj = {
   venue: "",
 };
 
+// A function for checking if the date or time has been already passed or not
+function checkSchedule(args) {
+  
+  const decidedDay = args[1];
+  const decidedTime = args[3];
+  const curDay = new Date().toLocaleDateString(undefined, {timeZone: "Asia/Kolkata"});
+  const curTime = new Date().toLocaleTimeString("en-US", {
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric",
+    timeZone: "Asia/Kolkata",
+  });
+
+  if (Date.parse(decidedDay) < Date.parse(curDay)) {
+    return false;
+  }
+
+  if (Date.parse(decidedDay) === Date.parse(curDay) && decidedTime < curTime) {
+    return false;
+  }
+
+  return true;
+
+}
+
 const compute = (args) => {
   args = args.filter((elem) => elem !== "");
   args = args.map((elem) => elem.toLowerCase());
@@ -52,8 +77,7 @@ module.exports = {
   name: "!addevent",
   permission: "*",
   description: "Add an event",
-  usage:
-    " ```!addevent\n\nFormat:\ndate: DD/MM/YYYY\ntime: HH:MM (24 hr)\ntitle: ...\nvenue: ...```",
+  usage: " ```!addevent\n\nFormat:\ndate: DD/MM/YYYY\ntime: HH:MM (24 hr)\ntitle: ...\nvenue: ...```",
   execute: async (message, args) => {
     if (!message.member.hasPermission("ADMINISTRATOR")) {
       message.channel.send("You do not have permission to run this command.");
@@ -63,6 +87,13 @@ module.exports = {
     if (!compute(args)) {
       message.channel.send(
         "Wrong format! Use !help addevent to know about usage."
+      );
+      return;
+    }
+
+    if (checkSchedule(args) === false) {
+      message.channel.send(
+        "Scheduled Date or Time has already passed, Try creating a valid event"
       );
       return;
     }
