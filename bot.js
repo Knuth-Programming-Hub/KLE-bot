@@ -3,33 +3,34 @@ const { join } = require("path");
 require("dotenv").config();
 
 const Discord = require("discord.js");
+const getFiles = require("./getFiles");
+const remind = require("./remind");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
-const getFiles = require("./getFiles");
-
 let commandFiles = [];
 
 // Greet a new user
-bot.on('guildMemberAdd', member => {
-
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'general');
+bot.on("guildMemberAdd", (member) => {
+  const channel = member.guild.channels.cache.find(
+    (ch) => ch.name === "welcome"
+  );
 
   if (!channel) return;
 
-  let name = member.user.username
+  let name = member.user.username;
   let welcomeEmbed = new Discord.MessageEmbed()
-      .setColor('#176ffc')
-      .setTitle(`Yay! ${name} you made it to KPH discord Server `)
-      .setDescription(`I am your friendly bot written in Javascript, Feel free to tell us more about yourself.`)
-      .setFooter('Use !help command to know more about me ')
-  channel.send(welcomeEmbed)
-})
+    .setColor("#176ffc")
+    .setTitle(`Yay! ${name} you made it to KPH discord Server `)
+    .setDescription(
+      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.`
+    )
+    .setFooter("Use !help command to know more about me ");
+  channel.send(welcomeEmbed);
+});
 
 bot.on("ready", async () => {
-  console.log("The KLE bot is online!");
-
   await getFiles("./commands")
     .then((files) => {
       for (const file of files) {
@@ -38,7 +39,10 @@ bot.on("ready", async () => {
       }
     })
     .catch((err) => console.log(err));
+  console.log("The KLE bot is online!");
 });
+
+setInterval(() => remind(bot), 3000000);
 
 bot.on("message", (message) => {
   const args = message.content.trim().split(/\r\n|\r|\n| +/);

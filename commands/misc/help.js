@@ -70,15 +70,9 @@ module.exports = {
 
     const commandsEmbedded = new Discord.MessageEmbed()
       .setTitle("Available commands")
-      .addFields(commands);
+      .addFields(commands)
+      .setFooter("* - only for admins");
 
-    message.channel.send({
-      embed: {
-        ...commandsEmbedded,
-        footer: {
-          text: "* - only for admins",
-        },
-      },
-    });
+    message.channel.send(commandsEmbedded);
   },
 };
