@@ -24,19 +24,19 @@ function checkSchedule(args) {
   
   const decidedDay = args[1];
   const decidedTime = args[3];
-  const curDay = new Date().toLocaleDateString(undefined, {timeZone: 'Asia/Kolkata'});
-  const curTime = new Date().toLocaleTimeString('en-US', {
+  const curDay = new Date().toLocaleDateString(undefined, {timeZone: "Asia/Kolkata"});
+  const curTime = new Date().toLocaleTimeString("en-US", {
     hour12: false,
     hour: "numeric",
     minute: "numeric",
-    timeZone: 'Asia/Kolkata',
+    timeZone: "Asia/Kolkata",
   });
 
   if (Date.parse(decidedDay) < Date.parse(curDay)) {
     return false;
   }
 
-  if (Date.parse(decidedTime) < Date.parse(curTime)) {
+  if (Date.parse(decidedDay) === Date.parse(curDay) && decidedTime < curTime) {
     return false;
   }
 
