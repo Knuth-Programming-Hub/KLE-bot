@@ -9,8 +9,6 @@ const remind = require("./remind");
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
-let commandFiles = [];
-
 // Greet a new user
 bot.on("guildMemberAdd", (member) => {
   const channel = member.guild.channels.cache.find(
