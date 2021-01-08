@@ -48,7 +48,6 @@ bot.on("message", (message) => {
   const args = message.content.trim().split(/\r\n|\r|\n| +/);
   const command = args.shift().toLowerCase();
 
-  // simulating "guildMemberAdd"
   if (command === "!verify") {
     verify(bot, message.author);
     return;
