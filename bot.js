@@ -56,11 +56,6 @@ bot.on("message", (message) => {
     return;
   }
 
-  if (command === "!addrole") {
-    addRole(bot, message.member, "JIITian");
-    return;
-  }
-
   // If a command is not present , log the default message
   if (!bot.commands.has(command)) {
     if (command[0] === "!") bot.commands.get("!invalid").execute(message, args);
