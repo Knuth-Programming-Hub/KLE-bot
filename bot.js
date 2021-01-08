@@ -23,7 +23,7 @@ bot.on("guildMemberAdd", (member) => {
     .setColor("#176ffc")
     .setTitle(`Yay! ${name} you made it to KPH discord Server `)
     .setDescription(
-      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\nIf you wish to be identified as JIITian, send !verify in #general.`
+      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\n *If* you wish to be identified as JIITian, send !verify in #general.`
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);

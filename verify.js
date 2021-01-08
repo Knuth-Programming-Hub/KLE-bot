@@ -8,6 +8,7 @@ const getInstructions = `**✨Hey! Welcome to the KPH server✨**
     
     e.g. If you email is abcd@example.com, reply /abcd@example.com.
     You will receive an OTP on the given mail ID.`;
+
 const getOTPInstructions = `**Check your email**
     Enter the OTP, with '/' as prefix, 
     e.g. if OTP is 123456, send /123456.`;
@@ -63,10 +64,23 @@ const checkIfVerified = async (bot, discordUser) => {
   return flag;
 };
 
-function validateEmail(email) {
+const validateEmail = (email) => {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
-}
+};
+
+const validateCollegeEmail = (email) => {
+  email = email.toLowerCase();
+  const name = email.substring(0, email.lastIndexOf("@"));
+  const domain = email.substring(email.lastIndexOf("@") + 1);
+  let batch = "20" + name[0] + name[1];
+  batch = Number(batch);
+  if (domain !== "mail.jiit.ac.in") {
+    return [false, "gmail"];
+  } else {
+    return [true, String(batch + 4)];
+  }
+};
 
 const filter = (m) => m.content.startsWith("/");
 
@@ -76,6 +90,7 @@ module.exports = async (bot, discordUser) => {
   if (check === false) {
     dmChannel.send(getInstructions).then(async () => {
       let flag = false;
+      let batchTag = "";
       await dmChannel
         .awaitMessages(filter, {
           max: 1,
@@ -92,7 +107,16 @@ module.exports = async (bot, discordUser) => {
             );
             return;
           }
-          // TODO: verify it is a college email.
+          const [ch, batch] = validateCollegeEmail(email);
+          batchTag = batch;
+          if (ch === false) {
+            flag = true;
+            dmChannel.send(
+              "Hmm, that doesn't look like a JIIT email address, Note that this verification is for JIIT students only."
+            );
+            return;
+          }
+
           sentOTP = await sendMail(email);
           console.log("Sent OTP:", sentOTP);
           if (sentOTP === null) {
@@ -125,12 +149,12 @@ module.exports = async (bot, discordUser) => {
             console.log("Recieved OTP:", recvOTP);
             if (String(sentOTP) !== String(recvOTP)) {
               flag = true;
-              dmChannel.send(
-                "Wrong OTP! Please try again after some time." // Can also mute for some time maybe.
-              );
+              dmChannel.send("Wrong OTP! Please try again after some time.");
               return;
             } else {
               addRole(bot, discordUser, "JIITian");
+              //TODO: automatic role creation.
+              addRole(bot, discordUser, batchTag);
               console.log("Verfied.");
               dmChannel.send(
                 "Yay! You have verified yourself as a JIITian and are now officially a member of the KPH Discord server! 🎉\n"
