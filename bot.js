@@ -1,10 +1,11 @@
-const { join } = require("path");
-
 require("dotenv").config();
 
+const { join } = require("path");
 const Discord = require("discord.js");
 const getFiles = require("./getFiles");
 const remind = require("./remind");
+const addRole = require("./utils/addRole");
+const verify = require("./verify");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
@@ -22,10 +23,11 @@ bot.on("guildMemberAdd", (member) => {
     .setColor("#176ffc")
     .setTitle(`Yay! ${name} you made it to KPH discord Server `)
     .setDescription(
-      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.`
+      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\nIf you wish to be identified as JIITian, send !verify in #general.`
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
+  verify(bot, member);
 });
 
 bot.on("ready", async () => {
@@ -45,6 +47,19 @@ setInterval(() => remind(bot), 3000000);
 bot.on("message", (message) => {
   const args = message.content.trim().split(/\r\n|\r|\n| +/);
   const command = args.shift().toLowerCase();
+
+  console.log(command);
+
+  // simulating "guildMemberAdd"
+  if (command === "!verify") {
+    verify(bot, message.author);
+    return;
+  }
+
+  if (command === "!addrole") {
+    addRole(bot, message.member, "JIITian");
+    return;
+  }
 
   // If a command is not present , log the default message
   if (!bot.commands.has(command)) {
