@@ -23,7 +23,7 @@ bot.on("guildMemberAdd", (member) => {
     .setColor("#176ffc")
     .setTitle(`Yay! ${name} you made it to KPH discord Server `)
     .setDescription(
-      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\n *If* you wish to be identified as JIITian, send !verify in #general.`
+      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\n *If* you wish to be identified as JIITian, send !verify in #general :D.`
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
@@ -47,8 +47,6 @@ setInterval(() => remind(bot), 3000000);
 bot.on("message", (message) => {
   const args = message.content.trim().split(/\r\n|\r|\n| +/);
   const command = args.shift().toLowerCase();
-
-  console.log(command);
 
   // simulating "guildMemberAdd"
   if (command === "!verify") {
