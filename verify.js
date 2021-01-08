@@ -3,16 +3,21 @@ var nodemailer = require("nodemailer");
 const addRole = require("./utils/addRole");
 
 const getInstructions = `**✨Hey! Welcome to the KPH server✨**
-    You will need to enter your institute mail ID so that we can verify you.
-    Reply to this text with your email ID with '/' as prefix.
-    
-    e.g. If you email is abcd@example.com, reply /abcd@example.com.
-    You will receive an OTP on the given mail ID.`;
 
-const getOTPInstructions = `**Check your email**
-    Enter the OTP, with '/' as prefix, 
-    e.g. if OTP is 123456, send /123456.
-    OTP expires in 5 minutes.`;
+You will need to enter here your institute email-id so that we can verify you.
+Enter the email-id with '/' as prefix.
+For example: If your email-id is abcd@example.com, reply /abcd@example.com.
+After verifying it, the bot will send an OTP to the given mail-id.
+
+*You will only get 5 minutes to enter a valid institute email-id.*
+
+**In case of any issues, seek help in the #admin-support channel on the server.**`;
+
+const getOTPInstructions = `**OTP sent! Please check your email!**
+Enter the OTP with '/' as prefix, 
+e.g. if OTP is 123456, send /123456.
+
+*OTP expires in 5 minutes.*`;
 
 const sendMail = async (email) => {
   let mailTransporter = nodemailer.createTransport({
@@ -32,7 +37,10 @@ const sendMail = async (email) => {
     from: process.env.SENDER_MAIL_ID,
     to: email,
     subject: "Knuth Programming Hub Discord Server - Verification",
-    text: `This is your OTP for verification: "${OTP}". Do not share this with anyone!`,
+    text: `This is your OTP for verification: "${OTP}".
+    Do not share this with anyone!
+    
+    If you didn't request for it, then please ignore this mail.`,
   };
 
   await mailTransporter.sendMail(mailDetails).then(
@@ -55,7 +63,6 @@ const checkIfVerified = async (bot, discordUser) => {
         .fetch(discordUser.id)
         .then((member) => {
           if (member.roles.cache.find((r) => r.name === "JIITian")) {
-            console.log("Already a verified member.");
             flag = true;
           }
         })
@@ -94,42 +101,80 @@ const filter = (m) => m.content.startsWith("/");
 module.exports = async (bot, discordUser) => {
   const dmChannel = await discordUser.createDM();
   const check = await checkIfVerified(bot, discordUser);
-  if (check === false) {
-    dmChannel.send(getInstructions).then(async () => {
-      let flag = false;
-      let batchTag = "";
+
+  if (check === true) {
+    dmChannel.send("You have been already verified as JIITian.");
+    return;
+  }
+
+  dmChannel.send(getInstructions).then(async () => {
+    let flag = false;
+    let batchTag = "";
+    await dmChannel
+      .awaitMessages(filter, {
+        max: 1,
+        time: 500000,
+        errors: ["time"],
+      })
+      .then(async (message) => {
+        message = message.first(); // User should now reply with email.
+        const email = message.content.substring(1);
+        if (validateEmail(email) === false) {
+          flag = true;
+          dmChannel.send(
+            "Hmm, that doesn't look like an email address. Send !verify on the server to try again."
+          );
+          return;
+        }
+        const [ch, batch] = validateCollegeEmail(email);
+        batchTag = batch;
+        if (ch === false) {
+          flag = true;
+          dmChannel.send(
+            "Hmm, that doesn't look like a JIIT email address. Note that this verification is for **JIIT students** only. Send !verify on the server to try again."
+          );
+          return;
+        }
+
+        sentOTP = await sendMail(email);
+        if (sentOTP === null) {
+          flag = true;
+          dmChannel.send(
+            "It seems that there was some error. Send !verify on the server to try again."
+          );
+          return;
+        }
+      })
+      .catch(() => {
+        flag = true;
+        discordUser.send("Timeout! Send !verify on the server to try again.");
+      });
+
+    if (flag === true) {
+      return;
+    }
+
+    dmChannel.send(getOTPInstructions).then(async () => {
       await dmChannel
         .awaitMessages(filter, {
           max: 1,
-          time: 100000,
+          time: 300000,
           errors: ["time"],
         })
         .then(async (message) => {
-          message = message.first(); // User should now reply with email.
-          const email = message.content.substring(1);
-          if (validateEmail(email) === false) {
+          message = message.first(); //User should now reply with the OTP
+          let recvOTP = message.content.substring(1);
+          if (String(sentOTP) !== String(recvOTP)) {
             flag = true;
             dmChannel.send(
-              "Hmm, that doesn't look like an email address, maybe try again, send !verify on the server again."
+              "Wrong OTP! Send !verify on the server to try again."
             );
             return;
-          }
-          const [ch, batch] = validateCollegeEmail(email);
-          batchTag = batch;
-          if (ch === false) {
-            flag = true;
+          } else {
+            addRole(bot, discordUser, "JIITian");
+            addRole(bot, discordUser, batchTag);
             dmChannel.send(
-              "Hmm, that doesn't look like a JIIT email address, Note that this verification is for JIIT **students** only."
-            );
-            return;
-          }
-
-          sentOTP = await sendMail(email);
-          console.log("Sent OTP:", sentOTP);
-          if (sentOTP === null) {
-            flag = true;
-            dmChannel.send(
-              "It seems there was some error. Please try again after some time."
+              "Yay! You have verified yourself as a JIITian and are now officially a member of the KPH Discord server! 🎉"
             );
             return;
           }
@@ -138,44 +183,6 @@ module.exports = async (bot, discordUser) => {
           flag = true;
           discordUser.send("Timeout, try again after some time.");
         });
-
-      if (flag === true) {
-        return;
-      }
-
-      dmChannel.send(getOTPInstructions).then(async () => {
-        await dmChannel
-          .awaitMessages(filter, {
-            max: 1,
-            time: 300000,
-            errors: ["time"],
-          })
-          .then(async (message) => {
-            message = message.first(); //User should now reply with the OTP
-            let recvOTP = message.content.substring(1);
-            console.log("Recieved OTP:", recvOTP);
-            if (String(sentOTP) !== String(recvOTP)) {
-              flag = true;
-              dmChannel.send("Wrong OTP! Please try again after some time.");
-              return;
-            } else {
-              addRole(bot, discordUser, "JIITian");
-              //TODO: automatic role creation.
-              addRole(bot, discordUser, batchTag);
-              console.log("Verfied.");
-              dmChannel.send(
-                "Yay! You have verified yourself as a JIITian and are now officially a member of the KPH Discord server! 🎉\n"
-              );
-              return;
-            }
-          })
-          .catch(() => {
-            flag = true;
-            discordUser.send("Timeout, try again after some time.");
-          });
-      });
     });
-  } else {
-    dmChannel.send("You have been already verified as JIITian.");
-  }
+  });
 };
