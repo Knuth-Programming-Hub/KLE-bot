@@ -22,7 +22,7 @@ bot.on("guildMemberAdd", async (member) => {
     .setColor("#176ffc")
     .setTitle(`Yay! ${name} you made it to KPH discord Server `)
     .setDescription(
-      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\n *If* you wish to be identified as JIITian, send !verify in #general :D.`
+      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\n *If* you wish to be identified as JIITian, send !verify in the #verify channel :D.`
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
@@ -51,7 +51,7 @@ setInterval(() => remind(bot), 3000000);
 bot.on("message", (message) => {
   if (message.channel.type === "dm") return;
 
-  const args = message.content.trim().split(/\r\n|\r|\n| +/);
+  const args = message.content.trim().split(/\r\n|\r|\n| +/); // removes any whitespace in the message
   const command = args.shift().toLowerCase();
 
   if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
@@ -59,7 +59,7 @@ bot.on("message", (message) => {
     return;
   }
 
-  // If a command is not present , log the default message
+  // If a command is not present, log the default message
   if (!bot.commands.has(command)) {
     if (command[0] === "!") bot.commands.get("!invalid").execute(message, args);
     return;
@@ -70,7 +70,7 @@ bot.on("message", (message) => {
     bot.commands.get(command).execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply("there was an error trying to execute that command!");
+    message.reply("There was some error in executing that command! 🙁");
   }
 });
 
