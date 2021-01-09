@@ -1,4 +1,4 @@
-module.exports = (bot, discordUserId, roleName) => {
+const addRole = (bot, discordUserId, roleName) => {
   roleName = String(roleName);
   bot.guilds
     .fetch(process.env.SERVER_GUILD_ID)
@@ -35,4 +35,29 @@ module.exports = (bot, discordUserId, roleName) => {
       }
     })
     .catch((err) => console.log(err));
+};
+
+const ban = (bot, discordUserId) => {
+  bot.guilds
+    .fetch(process.env.SERVER_GUILD_ID)
+    .then((guild) => {
+      guild.members
+        .fetch(discordUserId)
+        .then((member) => {
+          member
+            .ban({
+              days: 0,
+              reason: "Sorry, you failed the verification process 3 times!",
+            })
+            .then((mem) => console.log(mem))
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+};
+
+module.exports = {
+  addRole,
+  ban,
 };

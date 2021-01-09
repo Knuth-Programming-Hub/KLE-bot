@@ -1,6 +1,7 @@
 var otpGenerator = require("otp-generator");
 var nodemailer = require("nodemailer");
-const addRole = require("./utils/addRole");
+const user = require("./utils/usersHandlers");
+const { addRole, ban } = require("./utils/guildMemberHandlers");
 
 const getInstructions = `**✨Hey! Welcome to the KPH server✨**
 
@@ -38,9 +39,9 @@ const sendMail = async (email) => {
     to: email,
     subject: "Knuth Programming Hub Discord Server - Verification",
     text: `This is your OTP for verification: "${OTP}".
-    Do not share this with anyone!
+Do not share this with anyone!
     
-    If you didn't request for it, then please ignore this mail.`,
+If you didn't request for it, then please ignore this mail.`,
   };
 
   await mailTransporter.sendMail(mailDetails).then(
@@ -96,6 +97,16 @@ const validateCollegeEmail = (email) => {
   }
 };
 
+const handleFail = async (bot, dmChannel, discordUserId) => {
+  const failCount = await user.updateFailCount(discordUserId);
+  await dmChannel.send(`*No. of attempts left: ${3 - failCount}*`);
+  if (failCount >= 3) {
+    user.remove(discordUserId);
+    await dmChannel.send("You are banned from the server!!");
+    ban(bot, discordUserId);
+  }
+};
+
 const filter = (m) => m.content.startsWith("/");
 
 module.exports = async (bot, discordUser) => {
@@ -113,7 +124,7 @@ module.exports = async (bot, discordUser) => {
     await dmChannel
       .awaitMessages(filter, {
         max: 1,
-        time: 500000,
+        time: 300000,
         errors: ["time"],
       })
       .then(async (message) => {
@@ -124,6 +135,7 @@ module.exports = async (bot, discordUser) => {
           dmChannel.send(
             "Hmm, that doesn't look like an email address. Send !verify on the server to try again."
           );
+          handleFail(bot, dmChannel, discordUser.id);
           return;
         }
         const [ch, batch] = validateCollegeEmail(email);
@@ -133,6 +145,7 @@ module.exports = async (bot, discordUser) => {
           dmChannel.send(
             "Hmm, that doesn't look like a JIIT email address. Note that this verification is for **JIIT students** only. Send !verify on the server to try again."
           );
+          handleFail(bot, dmChannel, discordUser.id);
           return;
         }
 
@@ -142,12 +155,14 @@ module.exports = async (bot, discordUser) => {
           dmChannel.send(
             "It seems that there was some error. Send !verify on the server to try again."
           );
+          handleFail(bot, dmChannel, discordUser.id);
           return;
         }
       })
       .catch(() => {
         flag = true;
-        discordUser.send("Timeout! Send !verify on the server to try again.");
+        discordUser.send("Time's up! Send !verify on the server to try again.");
+        handleFail(bot, dmChannel, discordUser.id);
       });
 
     if (flag === true) {
@@ -169,6 +184,7 @@ module.exports = async (bot, discordUser) => {
             dmChannel.send(
               "Wrong OTP! Send !verify on the server to try again."
             );
+            handleFail(bot, dmChannel, discordUser.id);
             return;
           } else {
             addRole(bot, discordUser, "JIITian");
@@ -181,7 +197,10 @@ module.exports = async (bot, discordUser) => {
         })
         .catch(() => {
           flag = true;
-          discordUser.send("Timeout, try again after some time.");
+          discordUser.send(
+            "Time's up! Send !verify on the server to try again."
+          );
+          handleFail(bot, dmChannel, discordUser.id);
         });
     });
   });

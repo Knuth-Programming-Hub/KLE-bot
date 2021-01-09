@@ -1,11 +1,10 @@
 require("dotenv").config();
 
-const { join } = require("path");
 const Discord = require("discord.js");
 const getFiles = require("./getFiles");
 const remind = require("./remind");
-const addRole = require("./utils/addRole");
 const verify = require("./verify");
+const user = require("./utils/usersHandlers");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
@@ -27,7 +26,7 @@ bot.on("guildMemberAdd", (member) => {
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
-  verify(bot, member);
+  user.add(member.id);
 });
 
 bot.on("ready", async () => {
