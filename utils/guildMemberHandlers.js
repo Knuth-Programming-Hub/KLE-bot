@@ -49,7 +49,6 @@ const ban = (bot, discordUserId) => {
               days: 0,
               reason: "Failed the verification process 3 times.",
             })
-            .then((mem) => console.log(mem))
             .catch((err) => console.log(err));
         })
         .catch((err) => console.log(err));
