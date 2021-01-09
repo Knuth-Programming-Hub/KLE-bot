@@ -156,7 +156,6 @@ module.exports = async (bot, discordUser) => {
             "It seems that there was some error. Send !verify on the server to try again."
           );
           handleFail(bot, dmChannel, discordUser.id);
-          return;
         }
       })
       .catch(() => {
@@ -185,14 +184,12 @@ module.exports = async (bot, discordUser) => {
               "Wrong OTP! Send !verify on the server to try again."
             );
             handleFail(bot, dmChannel, discordUser.id);
-            return;
           } else {
             addRole(bot, discordUser, "JIITian");
             addRole(bot, discordUser, batchTag);
             dmChannel.send(
               "Yay! You have verified yourself as a JIITian and are now officially a member of the KPH Discord server! 🎉"
             );
-            return;
           }
         })
         .catch(() => {

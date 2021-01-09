@@ -44,13 +44,17 @@ bot.on("ready", async () => {
 setInterval(() => remind(bot), 3000000);
 
 bot.on("message", (message) => {
+  if (message.channel.type === "dm") return;
+
   const args = message.content.trim().split(/\r\n|\r|\n| +/);
   const command = args.shift().toLowerCase();
 
-  if (command === "!verify") {
-    verify(bot, message.author);
+  if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
+    if (command === "!verify") verify(bot, message.author);
     return;
   }
+
+  if (command === "!verify") return;
 
   // If a command is not present , log the default message
   if (!bot.commands.has(command)) {
