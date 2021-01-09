@@ -1,17 +1,16 @@
 require("dotenv").config();
 
-const { join } = require("path");
 const Discord = require("discord.js");
 const getFiles = require("./getFiles");
 const remind = require("./remind");
-const addRole = require("./utils/addRole");
 const verify = require("./verify");
+const user = require("./utils/usersHandlers");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
 // Greet a new user
-bot.on("guildMemberAdd", (member) => {
+bot.on("guildMemberAdd", async (member) => {
   const channel = member.guild.channels.cache.find(
     (ch) => ch.name === "welcome"
   );
@@ -27,7 +26,12 @@ bot.on("guildMemberAdd", (member) => {
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
-  verify(bot, member);
+
+  // adding the member to the "users" collection in DB
+  const exists = await user.existsInUsers(member.id);
+  if (exists === false) {
+    await user.add(member.id);
+  }
 });
 
 bot.on("ready", async () => {
@@ -45,11 +49,13 @@ bot.on("ready", async () => {
 setInterval(() => remind(bot), 3000000);
 
 bot.on("message", (message) => {
+  if (message.channel.type === "dm") return;
+
   const args = message.content.trim().split(/\r\n|\r|\n| +/);
   const command = args.shift().toLowerCase();
 
-  if (command === "!verify") {
-    verify(bot, message.author);
+  if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
+    if (command === "!verify") verify(bot, message.author);
     return;
   }
 
