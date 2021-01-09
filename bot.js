@@ -10,7 +10,7 @@ const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
 // Greet a new user
-bot.on("guildMemberAdd", (member) => {
+bot.on("guildMemberAdd", async (member) => {
   const channel = member.guild.channels.cache.find(
     (ch) => ch.name === "welcome"
   );
@@ -28,10 +28,10 @@ bot.on("guildMemberAdd", (member) => {
   channel.send(welcomeEmbed);
 
   // adding the member to the "users" collection in DB
-  user.existsInUsers(member.id).then((exists) => {
-    if (exists === true) return;
-    user.add(member.id);
-  });
+  const exists = await user.existsInUsers(member.id);
+  if (exists === false) {
+    await user.add(member.id);
+  }
 });
 
 bot.on("ready", async () => {
