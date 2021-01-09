@@ -28,7 +28,7 @@ module.exports = {
   name: "!paste",
   description: "Paste code and get a link for it",
   usage: "```!paste\n\nFormat:\n!paste <filename>\n<code>```",
-  execute: (message, recievedArgs) => {
+  execute: async (message, recievedArgs) => {
     const args = String(message.content.trim());
 
     if (!compute(args)) {
@@ -38,7 +38,7 @@ module.exports = {
       return;
     }
 
-    octokit.gists
+    await octokit.gists
       .create({
         public: false,
         files: {
@@ -46,12 +46,14 @@ module.exports = {
         },
       })
       .then((gist) => {
+        const time = new Date();
         const successMessage = {
           content: `<@${message.author.id}> the code is ready! 😀`,
           embed: {
             title: "Find it here!",
             url: `${gist.data.html_url}`,
             color: 4045991,
+            description: `Created at ${time.toString()}.`,
           },
         };
         message.channel.send(successMessage);
@@ -60,5 +62,7 @@ module.exports = {
         message.reply("There was some error. 🙁");
         console.log(err);
       });
+
+    message.delete();
   },
 };
