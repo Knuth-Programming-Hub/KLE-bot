@@ -26,7 +26,12 @@ bot.on("guildMemberAdd", (member) => {
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
-  user.add(member.id);
+
+  // adding the member to the "users" collection in DB
+  user.existsInUsers(member.id).then((exists) => {
+    if (exists === true) return;
+    user.add(member.id);
+  });
 });
 
 bot.on("ready", async () => {
@@ -53,8 +58,6 @@ bot.on("message", (message) => {
     if (command === "!verify") verify(bot, message.author);
     return;
   }
-
-  if (command === "!verify") return;
 
   // If a command is not present , log the default message
   if (!bot.commands.has(command)) {
