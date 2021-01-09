@@ -34,8 +34,8 @@ bot.on("guildMemberAdd", async (member) => {
   }
 });
 
-bot.on("ready", async () => {
-  await getFiles("./commands")
+bot.on("ready", () => {
+  getFiles("./commands")
     .then((files) => {
       for (const file of files) {
         const command = require(file);

@@ -175,7 +175,7 @@ module.exports = async (bot, discordUser) => {
           time: 300000,
           errors: ["time"],
         })
-        .then(async (message) => {
+        .then((message) => {
           message = message.first(); //User should now reply with the OTP
           let recvOTP = message.content.substring(1);
           if (String(sentOTP) !== String(recvOTP)) {
