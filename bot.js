@@ -10,7 +10,6 @@ const { sendCaptcha } = require("./utils/captcha");
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
-// Greet a new user
 bot.on("guildMemberAdd", async (member) => {
   const channel = member.guild.channels.cache.find(
     (ch) => ch.name === "welcome"
@@ -23,11 +22,13 @@ bot.on("guildMemberAdd", async (member) => {
     .setColor("#176ffc")
     .setTitle(`Yay! ${name} you made it to KPH discord Server `)
     .setDescription(
-      `I am your friendly bot written in Javascript.\n\n **Check your DM to solve the captcha**.\n\n*If* you wish to be identified as JIITian, send !verify in the #verify channel :D.`
+      `I am your friendly bot written in Javascript.\n\n **Check your DM to solve the captcha**.\n\n*If* you wish to be identified as a JIITian, please send !verify in the #verify channel :D.`
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
+
   await sendCaptcha(bot, member.user);
+
   // adding the member to the "users" collection in DB
   const exists = await user.existsInUsers(member.id);
   if (exists === false) {

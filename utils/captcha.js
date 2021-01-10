@@ -5,13 +5,13 @@ const Discord = require("discord.js");
 const { addRole } = require("./guildMemberHandlers");
 
 const getCaptcha = () => {
-  c = parseInt(Math.random() * 9999 + 100000);
+  const c = parseInt(Math.random() * 9999 + 100000);
   let p = new captchapng(80, 30, c);
   p.color(0, 0, 0, 0);
   p.color(80, 80, 80, 255);
   const base64 = p.getBase64();
   const imageBufferData = Buffer.from(base64, "base64");
-  var streamObj = new ReadableData();
+  let streamObj = new ReadableData();
   streamObj.push(imageBufferData);
   streamObj.push(null);
   streamObj.pipe(fs.createWriteStream("captcha.png"));
@@ -21,7 +21,7 @@ const getCaptcha = () => {
 const filter = (m) => m.content.startsWith("/");
 
 const sendCaptcha = async (bot, discordUser) => {
-  captcha = getCaptcha();
+  const captcha = getCaptcha();
   const dmChannel = await discordUser.createDM();
   const attachment = new Discord.MessageAttachment(
     "captcha.png",
@@ -30,7 +30,7 @@ const sendCaptcha = async (bot, discordUser) => {
   let embed = new Discord.MessageEmbed()
     .setTitle(`Solve the below captcha to access the server! `)
     .setDescription(
-      `Reply with the captcha seen in the image with prefix '/',\ne.g. if the captcha is 123456, send /123456`
+      `Reply with the captcha seen in the image with prefix '/'.\nExample: if the captcha is 123456, send /123456\nYou will only get a minute to enter the captcha.`
     )
     .attachFiles(attachment)
     .setImage("attachment://captcha.png");
@@ -45,11 +45,12 @@ const sendCaptcha = async (bot, discordUser) => {
         errors: ["time"],
       })
       .then((message) => {
-        message = message.first(); // User should now reply with captcha.
+        // User should now reply with captcha
+        message = message.first();
         const recvCaptcha = message.content.substring(1);
         if (String(recvCaptcha) !== String(captcha)) {
           dmChannel.send(
-            "Wrong Captcha, leave the server and join back again."
+            "Wrong Captcha! Leave the server and join back again..."
           );
           return;
         }
@@ -62,7 +63,7 @@ const sendCaptcha = async (bot, discordUser) => {
         dmChannel.send("Welcome to the KPH Discord server! 🎉");
       })
       .catch(() => {
-        discordUser.send("Time's up! Leave the server and join back again..");
+        discordUser.send("Time's up! Leave the server and join back again...");
       });
   });
 };
