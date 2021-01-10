@@ -1,0 +1,72 @@
+const fs = require("fs");
+const ReadableData = require("stream").Readable;
+const captchapng = require("captchapng");
+const Discord = require("discord.js");
+const { addRole } = require("./guildMemberHandlers");
+
+const getCaptcha = () => {
+  c = parseInt(Math.random() * 9999 + 100000);
+  let p = new captchapng(80, 30, c);
+  p.color(0, 0, 0, 0);
+  p.color(80, 80, 80, 255);
+  const base64 = p.getBase64();
+  const imageBufferData = Buffer.from(base64, "base64");
+  var streamObj = new ReadableData();
+  streamObj.push(imageBufferData);
+  streamObj.push(null);
+  streamObj.pipe(fs.createWriteStream("captcha.png"));
+  return c;
+};
+
+const filter = (m) => m.content.startsWith("/");
+
+const sendCaptcha = async (bot, discordUser) => {
+  captcha = getCaptcha();
+  const dmChannel = await discordUser.createDM();
+  const attachment = new Discord.MessageAttachment(
+    "captcha.png",
+    "captcha.png"
+  );
+  let embed = new Discord.MessageEmbed()
+    .setTitle(`Solve the below captcha to access the server! `)
+    .setDescription(
+      `Reply with the captcha seen in the image with prefix '/',\ne.g. if the captcha is 123456, send /123456`
+    )
+    .attachFiles(attachment)
+    .setImage("attachment://captcha.png");
+  dmChannel.send(embed).then(async () => {
+    fs.unlink("captcha.png", (err) => {
+      if (err) throw err;
+    });
+    await dmChannel
+      .awaitMessages(filter, {
+        max: 1,
+        time: 60000,
+        errors: ["time"],
+      })
+      .then((message) => {
+        message = message.first(); // User should now reply with captcha.
+        const recvCaptcha = message.content.substring(1);
+        if (String(recvCaptcha) !== String(captcha)) {
+          dmChannel.send(
+            "Wrong Captcha, leave the server and join back again."
+          );
+          return;
+        }
+        try {
+          addRole(bot, discordUser, "Member");
+        } catch (err) {
+          console.log(err);
+          return;
+        }
+        dmChannel.send("Welcome to the KPH Discord server! 🎉");
+      })
+      .catch(() => {
+        discordUser.send("Time's up! Leave the server and join back again..");
+      });
+  });
+};
+
+module.exports = {
+  sendCaptcha,
+};

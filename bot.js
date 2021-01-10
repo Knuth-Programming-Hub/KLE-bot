@@ -5,6 +5,7 @@ const getFiles = require("./getFiles");
 const remind = require("./remind");
 const verify = require("./verify");
 const user = require("./utils/usersHandlers");
+const { sendCaptcha } = require("./utils/captcha");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
@@ -22,11 +23,11 @@ bot.on("guildMemberAdd", async (member) => {
     .setColor("#176ffc")
     .setTitle(`Yay! ${name} you made it to KPH discord Server `)
     .setDescription(
-      `I am your friendly bot written in Javascript, Feel free to tell us more about yourself.\n *If* you wish to be identified as JIITian, send !verify in the #verify channel :D.`
+      `I am your friendly bot written in Javascript.\n\n **Check your DM to solve the captcha**.\n\n*If* you wish to be identified as JIITian, send !verify in the #verify channel :D.`
     )
     .setFooter("Use !help command to know more about me ");
   channel.send(welcomeEmbed);
-
+  await sendCaptcha(bot, member.user);
   // adding the member to the "users" collection in DB
   const exists = await user.existsInUsers(member.id);
   if (exists === false) {
@@ -78,6 +79,7 @@ bot.login(process.env.BOT_TOKEN);
 
 // web server
 const http = require("http");
+const captchapng = require("captchapng");
 const server = http.createServer((req, res) => {
   res.writeHead(200);
   res.end("ok");
