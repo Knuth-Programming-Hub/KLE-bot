@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const mongo = require("../../mongo");
-
 const Event = require("../../models/event.model");
 
 function convertTZ(date, tzString) {
@@ -22,13 +21,13 @@ const getDateAndTime = (dateObj) => {
   ];
 };
 
-const formatDate = (today) => {
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
+const formatDate = (date) => {
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0"); //January is 0!
+  const yyyy = date.getFullYear();
 
-  const date = yyyy + "/" + mm + "/" + dd;
-  return date;
+  const resDate = yyyy + "/" + mm + "/" + dd;
+  return resDate;
 };
 
 const compute = (eventObjects) => {
