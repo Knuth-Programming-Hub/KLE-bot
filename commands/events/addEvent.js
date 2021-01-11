@@ -1,5 +1,4 @@
 const mongo = require("../../mongo");
-
 const Event = require("../../models/event.model");
 
 const getDate = (date, time) => {
@@ -19,36 +18,19 @@ const eventObj = {
   venue: "",
 };
 
-// A function for checking if the date or time has been already passed or not
-function checkSchedule(args) {
-  const decidedDay = args[1];
-  const decidedTime = args[3];
-  const curDay = new Date().toLocaleDateString(undefined, {
-    timeZone: "Asia/Kolkata",
-  });
-  const curTime = new Date().toLocaleTimeString("en-US", {
-    hour12: false,
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: "Asia/Kolkata",
-  });
-
-  if (Date.parse(decidedDay) < Date.parse(curDay)) {
-    return false;
-  }
-
-  if (Date.parse(decidedDay) === Date.parse(curDay) && decidedTime < curTime) {
-    return false;
-  }
-
-  return true;
+function checkSchedule() {
+  const curTime = new Date();
+  return Date.parse(eventObj.date) >= Date.parse(curTime);
 }
 
 const compute = (args) => {
   args = args.filter((elem) => elem !== "");
-  args = args.map((elem) => elem.toLowerCase());
 
-  if (args[0] !== "date:" || args[2] !== "time:" || args[4] !== "title:")
+  if (
+    args[0].toLowerCase() !== "date:" ||
+    args[2].toLowerCase() !== "time:" ||
+    args[4].toLowerCase() !== "title:"
+  )
     return false;
 
   eventObj.date = getDate(args[1], args[3]);
@@ -58,7 +40,7 @@ const compute = (args) => {
 
   let flag = 0;
   for (let i = 5; i < args.length; i += 1) {
-    if (!flag && args[i] === "venue:") {
+    if (!flag && args[i].toLowerCase() === "venue:") {
       flag = 1;
       continue;
     }
@@ -92,9 +74,9 @@ module.exports = {
       return;
     }
 
-    if (checkSchedule(args) === false) {
+    if (!checkSchedule()) {
       message.channel.send(
-        "Scheduled Date or Time has already passed, Try creating a valid event"
+        "Scheduled Date or Time has already passed. Try creating a valid event..."
       );
       return;
     }

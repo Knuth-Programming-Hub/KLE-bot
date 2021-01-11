@@ -1,21 +1,33 @@
 const Discord = require("discord.js");
 const mongo = require("../../mongo");
-
 const Event = require("../../models/event.model");
 
+function convertTZ(date, tzString) {
+  return new Date(
+    (typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {
+      timeZone: tzString,
+    })
+  );
+}
+
 const getDateAndTime = (dateObj) => {
+  dateObj = convertTZ(dateObj, "Asia/Kolkata");
   dateObj = dateObj.toString();
+
   const pos = dateObj.indexOf(":") - 2;
-  return [dateObj.substring(4, pos), dateObj.substring(pos)];
+  return [
+    dateObj.substring(4, pos),
+    dateObj.substring(pos, pos + 5) + " (IST)",
+  ];
 };
 
-const formatDate = (today) => {
-  var dd = String(today.getDate()).padStart(2, "0");
-  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  var yyyy = today.getFullYear();
+const formatDate = (date) => {
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0"); //January is 0!
+  const yyyy = date.getFullYear();
 
-  const date = yyyy + "/" + mm + "/" + dd;
-  return date;
+  const resDate = yyyy + "/" + mm + "/" + dd;
+  return resDate;
 };
 
 const compute = (eventObjects) => {
