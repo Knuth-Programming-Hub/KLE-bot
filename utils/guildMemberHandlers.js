@@ -56,7 +56,31 @@ const ban = (bot, discordUserId) => {
     .catch((err) => console.log(err));
 };
 
+const getBatch = async (bot, discordUserId) => {
+  let batch = null;
+  await bot.guilds
+    .fetch(process.env.SERVER_GUILD_ID)
+    .then((guild) => {
+      guild.members
+        .fetch(discordUserId)
+        .then((member) => {
+          const roles = member.roles.cache.array();
+          for (let elem of roles) {
+            if (elem.name.startsWith("20") === true) {
+              batch = Number(elem.name);
+              break;
+            }
+          }
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+
+  return batch;
+};
+
 module.exports = {
   addRole,
   ban,
+  getBatch,
 };
