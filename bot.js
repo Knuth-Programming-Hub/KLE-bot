@@ -6,6 +6,7 @@ const remind = require("./remind");
 const verify = require("./verify");
 const user = require("./utils/usersHandlers");
 const { sendCaptcha } = require("./utils/captcha");
+const { handleIdentify } = require("./utils/TLE");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
@@ -52,6 +53,11 @@ setInterval(() => remind(bot), 3000000);
 
 bot.on("message", (message) => {
   if (message.channel.type === "dm") return;
+
+  if (message.author.id === process.env.TLE_ID) {
+    handleIdentify(bot, message);
+    return;
+  }
 
   const args = message.content.trim().split(/\r\n|\r|\n| +/); // removes any whitespace in the message
   const command = args.shift().toLowerCase();
