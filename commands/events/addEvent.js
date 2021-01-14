@@ -86,16 +86,9 @@ module.exports = {
     await mongo().then(async (mongoose) => {
       try {
         const event = new Event(eventObj);
-
-        await event
-          .save()
-          .then((doc) => {
-            str = "Event Successfully Added! 😀";
-          })
-          .catch((err) => {
-            str = "There was some error. 🙁";
-            console.log(err);
-          });
+        await event.save().then((doc) => {
+          str = "Event Successfully Added! 😀";
+        });
       } finally {
         mongoose.connection.close();
       }

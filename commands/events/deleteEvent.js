@@ -1,5 +1,4 @@
 const mongo = require("../../mongo");
-
 const Event = require("../../models/event.model");
 
 module.exports = {
@@ -29,20 +28,9 @@ module.exports = {
           .sort("date")
           .then(async (response) => {
             const id = response[index]._id;
-            await Event.findByIdAndRemove(id)
-              .then((response) => {
-                message.channel.send("Event deleted successfully! 🔥");
-              })
-              .catch((err) => {
-                console.log(err);
-                message.channel.send(
-                  "There was some error in deleting the event. 🙁"
-                );
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-            message.channel.send("There was some error. 🙁");
+            await Event.findByIdAndRemove(id).then((response) => {
+              message.channel.send("Event deleted successfully! 🔥");
+            });
           });
       } finally {
         mongoose.connection.close();

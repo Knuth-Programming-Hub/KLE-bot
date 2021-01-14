@@ -65,16 +65,7 @@ module.exports = {
               continue;
             }
             const id = response[index]._id;
-            await Event.findByIdAndRemove(id)
-              .then((response) => {
-                console.log("Past events deleted successfully! 🔥");
-              })
-              .catch((err) => {
-                console.log(err);
-                console.log(
-                  "There was some error in deleting a past event. 🙁"
-                );
-              });
+            await Event.findByIdAndRemove(id);
           }
         });
       try {
@@ -88,10 +79,6 @@ module.exports = {
               .addFields(events);
 
             message.channel.send(eventsEmbedded);
-          })
-          .catch((err) => {
-            console.log(err);
-            message.channel.send("There was some error. 🙁");
           });
       } finally {
         mongoose.connection.close();

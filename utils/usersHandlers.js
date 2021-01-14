@@ -9,10 +9,7 @@ const add = async (discordUserId) => {
         failCount: 0,
       });
 
-      await newUser
-        .save()
-        .then((doc) => {})
-        .catch((err) => console.log(err));
+      await newUser.save();
     } finally {
       mongoose.connection.close();
     }
@@ -25,8 +22,7 @@ const updateFailCount = async (discordUserId) => {
   await mongo().then(async (mongoose) => {
     try {
       await User.findOne({ discordId: discordUserId }, (err, doc) => {
-        if (err) console.log(err);
-        else if (doc) {
+        if (doc) {
           count = doc.failCount + 1;
         }
       });
@@ -38,10 +34,7 @@ const updateFailCount = async (discordUserId) => {
     try {
       await User.findOneAndUpdate(
         { discordId: discordUserId },
-        { failCount: count },
-        (err, doc) => {
-          if (err) console.log(err);
-        }
+        { failCount: count }
       );
     } finally {
       mongoose.connection.close();
@@ -56,13 +49,7 @@ const updateCfHandle = async (discordUserId, cfHandle, batch = null) => {
 
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOneAndUpdate(
-        { discordId: discordUserId },
-        update,
-        (err, doc) => {
-          if (err) console.log(err);
-        }
-      );
+      await User.findOneAndUpdate({ discordId: discordUserId }, update);
     } finally {
       mongoose.connection.close();
     }
@@ -75,8 +62,7 @@ const existsInUsers = async (discordUserId) => {
   await mongo().then(async (mongoose) => {
     try {
       await User.findOne({ discordId: discordUserId }, (err, doc) => {
-        if (err) console.log(err);
-        else if (doc) exists = true;
+        if (doc) exists = true;
       });
     } finally {
       mongoose.connection.close();
@@ -89,9 +75,7 @@ const existsInUsers = async (discordUserId) => {
 const remove = async (discordUserId) => {
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOneAndDelete({ discordId: discordUserId }, (err, doc) => {
-        if (err) console.log(err);
-      });
+      await User.findOneAndDelete({ discordId: discordUserId });
     } finally {
       mongoose.connection.close();
     }

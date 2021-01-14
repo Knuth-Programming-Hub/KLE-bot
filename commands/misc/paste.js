@@ -57,10 +57,6 @@ module.exports = {
           },
         };
         message.channel.send(successMessage);
-      })
-      .catch((err) => {
-        message.reply("There was some error. 🙁");
-        console.log(err);
       });
 
     message.delete();

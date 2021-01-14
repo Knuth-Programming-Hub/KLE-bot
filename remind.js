@@ -92,9 +92,6 @@ module.exports = async (bot) => {
               .addFields(eventFormatted);
             channel.send(embed);
           }
-        })
-        .catch((err) => {
-          console.log(err);
         });
     } finally {
       mongoose.connection.close();

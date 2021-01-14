@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const mongo = require("../../mongo");
-
 const Event = require("../../models/event.model");
 
 const getDateAndTime = (dateObj) => {
@@ -42,10 +41,6 @@ module.exports = {
               .addFields(nextEvent);
 
             message.channel.send(nextEventEmbedded);
-          })
-          .catch((err) => {
-            console.log(err);
-            message.channel.send("There was some error. 🙁");
           });
       } finally {
         mongoose.connection.close();
