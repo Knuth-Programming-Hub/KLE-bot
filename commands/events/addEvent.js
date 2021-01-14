@@ -81,19 +81,15 @@ module.exports = {
       return;
     }
 
-    let str = "";
-
     await mongo().then(async (mongoose) => {
       try {
         const event = new Event(eventObj);
         await event.save().then((doc) => {
-          str = "Event Successfully Added! 😀";
+          message.channel.send("Event Successfully Added! 😀");
         });
       } finally {
         mongoose.connection.close();
       }
     });
-
-    message.channel.send(str);
   },
 };
