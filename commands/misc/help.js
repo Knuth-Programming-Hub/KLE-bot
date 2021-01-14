@@ -22,22 +22,20 @@ module.exports = {
       }
 
       let flag = 0;
-      await getFiles("./commands")
-        .then((files) => {
-          for (let file of files) {
-            let filePath = String(file);
-            // thanks: https://stackoverflow.com/a/423385/9950042
-            var filename = filePath.replace(/^.*[\\\/]/, ""); // Get Filename.
-            filename = filename.substring(0, filename.length - 3).toLowerCase(); // Remove extension.
-            if (args[0].toLowerCase() == filename) {
-              const command = require(filePath);
-              message.channel.send(command.usage);
-              flag = 1; // command exists.
-              return;
-            }
+      await getFiles("./commands").then((files) => {
+        for (let file of files) {
+          let filePath = String(file);
+          // thanks: https://stackoverflow.com/a/423385/9950042
+          var filename = filePath.replace(/^.*[\\\/]/, ""); // Get Filename.
+          filename = filename.substring(0, filename.length - 3).toLowerCase(); // Remove extension.
+          if (args[0].toLowerCase() == filename) {
+            const command = require(filePath);
+            message.channel.send(command.usage);
+            flag = 1; // command exists.
+            return;
           }
-        })
-        .catch((err) => console.log(err));
+        }
+      });
 
       if (!flag)
         message.channel.send(
@@ -47,26 +45,24 @@ module.exports = {
     }
 
     let commands = [];
-    await getFiles("./commands")
-      .then((files) => {
-        for (let file of files) {
-          let filePath = String(file);
-          var filename = filePath.replace(/^.*[\\\/]/, "");
-          filename = filename.substring(0, filename.length - 3).toLowerCase();
-          if (filename === "invalid") {
-            continue;
-          }
-          const command = require(filePath);
-          commands.push({
-            name: `${command.name} ${
-              command.permission === undefined ? "" : command.permission
-            }`,
-            value: command.description,
-            inline: false,
-          });
+    await getFiles("./commands").then((files) => {
+      for (let file of files) {
+        let filePath = String(file);
+        var filename = filePath.replace(/^.*[\\\/]/, "");
+        filename = filename.substring(0, filename.length - 3).toLowerCase();
+        if (filename === "invalid") {
+          continue;
         }
-      })
-      .catch((err) => console.log(err));
+        const command = require(filePath);
+        commands.push({
+          name: `${command.name} ${
+            command.permission === undefined ? "" : command.permission
+          }`,
+          value: command.description,
+          inline: false,
+        });
+      }
+    });
 
     const commandsEmbedded = new Discord.MessageEmbed()
       .setTitle("Available commands")

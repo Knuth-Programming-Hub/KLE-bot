@@ -2,13 +2,13 @@ const { MessageEmbed } = require("discord.js");
 const mongo = require("./mongo");
 const Event = require("./models/event.model");
 
-function convertTZ(date, tzString) {
+const convertTZ = (date, tzString) => {
   return new Date(
     (typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {
       timeZone: tzString,
     })
   );
-}
+};
 
 const getDateAndTime = (dateObj) => {
   dateObj = convertTZ(dateObj, "Asia/Kolkata");
@@ -92,9 +92,6 @@ module.exports = async (bot) => {
               .addFields(eventFormatted);
             channel.send(embed);
           }
-        })
-        .catch((err) => {
-          console.log(err);
         });
     } finally {
       mongoose.connection.close();

@@ -12,28 +12,36 @@ const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
 bot.on("guildMemberAdd", async (member) => {
-  const channel = member.guild.channels.cache.find(
-    (ch) => ch.name === "welcome"
-  );
+  try {
+    if (member.user.bot === true) return;
 
-  if (!channel) return;
+    const channel = member.guild.channels.cache.find(
+      (ch) => ch.name === "welcome"
+    );
 
-  let name = member.user.username;
-  let welcomeEmbed = new Discord.MessageEmbed()
-    .setColor("#176ffc")
-    .setTitle(`Yay! ${name} you made it to KPH discord Server `)
-    .setDescription(
-      `I am your friendly bot written in Javascript.\n\n **Check your DM to solve the captcha**.\n\n*If* you wish to be identified as a JIITian, please send !verify in the #verify channel :D.`
-    )
-    .setFooter("Use !help command to know more about me ");
-  channel.send(welcomeEmbed);
+    if (!channel) return;
 
-  await sendCaptcha(bot, member.user);
+    let name = member.user.username;
+    let welcomeEmbed = new Discord.MessageEmbed()
+      .setColor("#176ffc")
+      .setTitle(`Yay! ${name} you made it to KPH discord Server `)
+      .setDescription(
+        `I am your friendly bot written in Javascript.\n\n **Check your DM to solve the captcha**.\n\n*If* you wish to be identified as a JIITian, please send !verify in the #verify channel :D.`
+      )
+      .setFooter("Use !help command to know more about me ");
+    channel.send(welcomeEmbed);
 
-  // adding the member to the "users" collection in DB
-  const exists = await user.existsInUsers(member.id);
-  if (exists === false) {
-    await user.add(member.id);
+    await sendCaptcha(bot, member.user);
+
+    // adding the member to the "users" collection in DB
+    const exists = await user.existsInUsers(member.id);
+    if (exists === false) {
+      await user.add(member.id);
+    }
+  } catch (error) {
+    bot.channels.cache
+      .get(process.env.ERROR_LOG_CHANNEL)
+      .send(error.toString());
   }
 });
 
@@ -49,9 +57,17 @@ bot.on("ready", () => {
   console.log("The KLE bot is online!");
 });
 
-setInterval(() => remind(bot), 3000000);
+setInterval(async () => {
+  try {
+    await remind(bot);
+  } catch (error) {
+    bot.channels.cache
+      .get(process.env.ERROR_LOG_CHANNEL)
+      .send(error.toString());
+  }
+}, 3000000);
 
-bot.on("message", (message) => {
+bot.on("message", async (message) => {
   if (message.channel.type === "dm") return;
 
   if (message.author.id === process.env.TLE_ID) {
@@ -63,7 +79,15 @@ bot.on("message", (message) => {
   const command = args.shift().toLowerCase();
 
   if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
-    if (command === "!verify") verify(bot, message.author);
+    if (command === "!verify") {
+      try {
+        await verify(bot, message.author);
+      } catch (error) {
+        bot.channels.cache
+          .get(process.env.ERROR_LOG_CHANNEL)
+          .send(error.toString());
+      }
+    }
     return;
   }
 
@@ -75,9 +99,11 @@ bot.on("message", (message) => {
 
   // otherwise execute that command
   try {
-    bot.commands.get(command).execute(message, args);
+    await bot.commands.get(command).execute(message, args);
   } catch (error) {
-    console.error(error);
+    bot.channels.cache
+      .get(process.env.ERROR_LOG_CHANNEL)
+      .send(error.toString());
     message.reply("There was some error in executing that command! 🙁");
   }
 });

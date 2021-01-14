@@ -47,7 +47,6 @@ If you didn't request for it, then please ignore this mail.`,
   await mailTransporter.sendMail(mailDetails).then(
     (data) => {},
     (err) => {
-      console.log(err);
       OTP = null;
     }
   );
@@ -57,19 +56,13 @@ If you didn't request for it, then please ignore this mail.`,
 
 const checkIfVerified = async (bot, discordUser) => {
   var flag = false;
-  await bot.guilds
-    .fetch(process.env.SERVER_GUILD_ID)
-    .then((guild) => {
-      guild.members
-        .fetch(discordUser.id)
-        .then((member) => {
-          if (member.roles.cache.find((r) => r.name === "JIITian")) {
-            flag = true;
-          }
-        })
-        .catch((err) => console.log(err));
-    })
-    .catch((err) => console.log(err));
+  await bot.guilds.fetch(process.env.SERVER_GUILD_ID).then((guild) => {
+    guild.members.fetch(discordUser.id).then((member) => {
+      if (member.roles.cache.find((r) => r.name === "JIITian")) {
+        flag = true;
+      }
+    });
+  });
 
   return flag;
 };
