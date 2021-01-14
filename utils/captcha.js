@@ -52,7 +52,7 @@ const sendCaptcha = async (bot, discordUser) => {
           dmChannel.send(
             "Wrong Captcha! Leave the server and join back again..."
           );
-          return;
+          return false;
         }
         try {
           addRole(bot, discordUser, "Member");
@@ -60,12 +60,14 @@ const sendCaptcha = async (bot, discordUser) => {
           bot.channels.cache
             .get(process.env.ERROR_LOG_CHANNEL)
             .send(error.toString());
-          return;
+          return false;
         }
         dmChannel.send("Welcome to the KPH Discord server! 🎉");
+        return true;
       })
       .catch(() => {
         discordUser.send("Time's up! Leave the server and join back again...");
+        return false;
       });
   });
 };

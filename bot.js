@@ -31,7 +31,8 @@ bot.on("guildMemberAdd", async (member) => {
       .setFooter("Use !help command to know more about me ");
     channel.send(welcomeEmbed);
 
-    await sendCaptcha(bot, member.user);
+    const passed = await sendCaptcha(bot, member.user);
+    if (passed === false) return;
 
     // adding the member to the "users" collection in DB
     const exists = await user.existsInUsers(member.id);
