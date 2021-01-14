@@ -59,7 +59,7 @@ const sendCaptcha = async (bot, discordUser) => {
         } catch (error) {
           bot.channels.cache
             .get(process.env.ERROR_LOG_CHANNEL)
-            .send(error.toString());
+            .send(error.stack);
           return false;
         }
         dmChannel.send("Welcome to the KPH Discord server! 🎉");

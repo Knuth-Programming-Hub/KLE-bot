@@ -40,9 +40,7 @@ bot.on("guildMemberAdd", async (member) => {
       await user.add(member.id);
     }
   } catch (error) {
-    bot.channels.cache
-      .get(process.env.ERROR_LOG_CHANNEL)
-      .send(error.toString());
+    bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
   }
 });
 
@@ -62,9 +60,7 @@ setInterval(async () => {
   try {
     await remind(bot);
   } catch (error) {
-    bot.channels.cache
-      .get(process.env.ERROR_LOG_CHANNEL)
-      .send(error.toString());
+    bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
   }
 }, 3000000);
 
@@ -84,9 +80,7 @@ bot.on("message", async (message) => {
       try {
         await verify(bot, message.author);
       } catch (error) {
-        bot.channels.cache
-          .get(process.env.ERROR_LOG_CHANNEL)
-          .send(error.toString());
+        bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
       }
     }
     return;
@@ -102,9 +96,7 @@ bot.on("message", async (message) => {
   try {
     await bot.commands.get(command).execute(message, args);
   } catch (error) {
-    bot.channels.cache
-      .get(process.env.ERROR_LOG_CHANNEL)
-      .send(error.toString());
+    bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
     message.reply("There was some error in executing that command! 🙁");
   }
 });
