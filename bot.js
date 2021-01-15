@@ -31,7 +31,8 @@ bot.on("guildMemberAdd", async (member) => {
       .setFooter("Use !help command to know more about me ");
     channel.send(welcomeEmbed);
 
-    await sendCaptcha(bot, member.user);
+    const passed = await sendCaptcha(bot, member.user);
+    if (passed === false) return;
 
     // adding the member to the "users" collection in DB
     const exists = await user.existsInUsers(member.id);
@@ -39,9 +40,7 @@ bot.on("guildMemberAdd", async (member) => {
       await user.add(member.id);
     }
   } catch (error) {
-    bot.channels.cache
-      .get(process.env.ERROR_LOG_CHANNEL)
-      .send(error.toString());
+    bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
   }
 });
 
@@ -61,9 +60,7 @@ setInterval(async () => {
   try {
     await remind(bot);
   } catch (error) {
-    bot.channels.cache
-      .get(process.env.ERROR_LOG_CHANNEL)
-      .send(error.toString());
+    bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
   }
 }, 3000000);
 
@@ -83,9 +80,7 @@ bot.on("message", async (message) => {
       try {
         await verify(bot, message.author);
       } catch (error) {
-        bot.channels.cache
-          .get(process.env.ERROR_LOG_CHANNEL)
-          .send(error.toString());
+        bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
       }
     }
     return;
@@ -101,9 +96,7 @@ bot.on("message", async (message) => {
   try {
     await bot.commands.get(command).execute(message, args);
   } catch (error) {
-    bot.channels.cache
-      .get(process.env.ERROR_LOG_CHANNEL)
-      .send(error.toString());
+    bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
     message.reply("There was some error in executing that command! 🙁");
   }
 });
