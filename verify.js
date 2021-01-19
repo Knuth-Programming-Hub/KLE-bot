@@ -1,7 +1,7 @@
 var otpGenerator = require("otp-generator");
 var nodemailer = require("nodemailer");
 const user = require("./utils/usersHandlers");
-const { addRole, ban } = require("./utils/guildMemberHandlers");
+const { addRole, ban, removeRole } = require("./utils/guildMemberHandlers");
 
 const getInstructions = `**✨Hey! Welcome to the KPH server✨**
 
@@ -178,6 +178,7 @@ module.exports = async (bot, discordUser) => {
             );
             handleFail(bot, dmChannel, discordUser.id);
           } else {
+            removeRole(bot, discordUser, "Member");
             addRole(bot, discordUser, "JIITian");
             addRole(bot, discordUser, batchTag);
             dmChannel.send(
