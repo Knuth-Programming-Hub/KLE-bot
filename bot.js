@@ -83,7 +83,7 @@ bot.on("message", async (message) => {
         bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
       }
     }
-    return;
+    if (command !== "!clearchannel") return;
   }
 
   // If a command is not present, log the default message
