@@ -9,20 +9,23 @@ The purpose of this bot is to automate various tasks of the Hub and at the same 
 - [x] Managing Meetups/Events
 - [x] Identifying and Verifying [JIIT](http://www.jiit.ac.in/) students
 - [x] Creating link for a particular code
+- [x] Year-wise ranklists
 
 ## Future Prospects
 
+- Generating data for members' performances in CF contests
 - Connecting to the Telegram group
 - Accepting/Rejecting requests on the CF group
-- Answering trivial and repeated questions
 - Managing Polls
-- Batch-wise leaderboards
 
 ## How to Get Started
 
-- Follow the steps provided [here](CONTRIBUTING.md).
+- Follow the steps provided [here](CONTRIBUTING.md#Setup).
+- If you don't want to go through the hassle of setting up the bot, join our [server](https://discord.gg/jatPMerTED) to try the bot instantly.
 
 ## Contributing workflow
+
+Note: Do checkout our [Project board](https://github.com/Knuth-Programming-Hub/KLE-bot/projects/1). Here you will find the things we already are working on and have planned for improving the bot. Also checkout the [Discussions](https://github.com/Knuth-Programming-Hub/KLE-bot/discussions) for this repository.
 
 - You can work on existing [issues](https://github.com/Knuth-Programming-Hub/KLE-bot/issues) or create new issues and work on them.
 - After completing the steps mentioned in [CONTRIBUTING.md](CONTRIBUTING.md) you have the project up and running. You are right now in _master branch_. (You can check your current branch with `git branch`.)
