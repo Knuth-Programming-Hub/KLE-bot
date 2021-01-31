@@ -38,7 +38,7 @@ The bot uses MongoDB as its database. In order to install MongoDB, refer the gui
 
 ### Create the bot on Discord
 
-For a more illustrated guide, refer [this](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token).
+For an illustrated guide, refer [this](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token).
 
 - Go to [Discord Developer Portal](https://discord.com/developers/applications) and login with your Discord Account.
 - Create a New Application.
