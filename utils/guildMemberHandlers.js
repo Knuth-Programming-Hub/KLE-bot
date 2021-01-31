@@ -27,6 +27,18 @@ const addRole = (bot, discordUserId, roleName) => {
   });
 };
 
+const hasRole = async (bot, discordUserId, roleName) => {
+  roleName = String(roleName);
+  let role;
+  await bot.guilds.fetch(process.env.SERVER_GUILD_ID).then((guild) => {
+    guild.members.fetch(discordUserId).then((member) => {
+      role = member.roles.cache.find((role) => role.name === roleName);
+    });
+  });
+
+  return role !== undefined;
+};
+
 const removeRole = (bot, discordUserId, roleName) => {
   roleName = String(roleName);
   bot.guilds.fetch(process.env.SERVER_GUILD_ID).then((guild) => {
@@ -69,6 +81,7 @@ const getBatch = async (bot, discordUserId) => {
 
 module.exports = {
   addRole,
+  hasRole,
   removeRole,
   ban,
   getBatch,

@@ -7,6 +7,7 @@ const verify = require("./verify");
 const user = require("./utils/usersHandlers");
 const { sendCaptcha } = require("./utils/captcha");
 const { handleIdentify } = require("./utils/TLE");
+const { hasRole } = require("./utils/guildMemberHandlers");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
@@ -90,6 +91,14 @@ bot.on("message", async (message) => {
   if (!bot.commands.has(command)) {
     if (command[0] === "!") bot.commands.get("!invalid").execute(message, args);
     return;
+  }
+
+  if (bot.commands.get(command).permission === "*") {
+    const admin = await hasRole(bot, message.author.id, "Admin");
+    if (admin === false) {
+      message.reply("you do not have permission to run this command.");
+      return;
+    }
   }
 
   // otherwise execute that command
