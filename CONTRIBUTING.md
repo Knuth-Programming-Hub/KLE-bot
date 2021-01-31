@@ -61,7 +61,7 @@ For the environment variables, create a _.env_ file.
 <details>
   <summary>Bot token</summary>
 
-First of all, you need to specify your Bot token to perform any action through your bot.
+First of all, you need to specify [your Bot token](CONTRIBUTING.md#Create-the-bot-on-Discord) to perform any action through your bot.
 
 ```
 BOT_TOKEN = <Your-Bot-Token>
@@ -70,9 +70,9 @@ BOT_TOKEN = <Your-Bot-Token>
 </details>
 
 <details>
-  <summary>MongpDB path</summary>
+  <summary>MongoDB path</summary>
 
-The path to your MongoDB server is required for establising the connection.
+The path to [your MongoDB server](CONTRIBUTING.md#Setup-local-MongoDB-server) is required for establising the connection.
 
 ```
 mongoPath = "mongodb://localhost:27017/<Your-DB-Name>"
@@ -85,19 +85,19 @@ mongoPath = "mongodb://localhost:27017/<Your-DB-Name>"
 
 To get the Server, Channel and User IDs on Discord, refer this [article](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID).
 
-- Server ID is required to handle many server-related actions.
+- The Server ID is required to handle many server-related actions.
   ```
   SERVER_GUILD_ID = <Your-Test-Server-ID>
   ```
-- Currently, as part of the "JIITian-verification-process", the bot only allow members to initiate the process through the Verify channel.
+- Currently, as part of the "JIITian-verification-process", the bot only allow members to initiate the process through a specific channel on the server.
   ```
   VERIFY_CHANNEL_ID = <Verify-Channel-ID>
   ```
-- In case there is any error, the bot logs the error message to a specified Discord channel.
+- In case there is any error, the bot logs the error message to a specified channel on the server.
   ```
   ERROR_LOG_CHANNEL = <Error-Log-Channel-ID>
   ```
-- To link Discord usernames to CF handles the bot depends upon the [TLE bot](https://github.com/cheran-senthil/TLE).
+- To link Discord usernames to CF handles the bot depends upon the [TLE bot](https://github.com/cheran-senthil/TLE). This also means that you require TLE to be in your Test server for accomplishing this task.
   ```
   TLE_ID = <TLE-Bot-Discord-User-ID>
   ```
@@ -107,7 +107,7 @@ To get the Server, Channel and User IDs on Discord, refer this [article](https:/
 <details>
   <summary>Email Credentails</summary>
 
-The verification process involves sending a mail to the institute email id of the member.
+The verification process involves sending an email to the institute email id of the member who has requested verification. For this reason an email account is required which will be used to send the email.
 
 ```
 SENDER_MAIL_ID = <Email-ID>
@@ -119,10 +119,10 @@ SENDER_PASSWORD = <Email-Password>
 <details>
   <summary>GitHub Token</summary>
 
-The _!paste_ command uses [gists](https://docs.github.com/en/free-pro-team@latest/github/writing-on-github/creating-gists#about-gists) and for that you require a GitHub Personal access token ([create](https://github.com/settings/tokens/new)). You need to atleast select the _"gist"_ scope for the token you will create.
+The bot has a _!paste_ command which uses [gists](https://docs.github.com/en/free-pro-team@latest/github/writing-on-github/creating-gists#about-gists) and for that you require a GitHub personal access token ([create](https://github.com/settings/tokens/new)). You need to atleast select the _"gist"_ scope for the token you will create.
 
 ```
-GITHUB_TOKEN = <GitHub-token>
+GITHUB_TOKEN = <GitHub-Token>
 ```
 
 </details>
