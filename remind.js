@@ -56,14 +56,9 @@ const compute = (eventObjects) => {
 };
 
 module.exports = async (bot) => {
-  const channels = await bot.channels.cache;
+  const guild = await bot.guilds.fetch(process.env.SERVER_GUILD_ID);
+  const channel = guild.channels.cache.find((ch) => ch.name === "general");
 
-  let channel;
-  channels.forEach((ch) => {
-    if (ch.name === "general") {
-      channel = ch;
-    }
-  });
   await mongo().then(async (mongoose) => {
     try {
       await Event.find()

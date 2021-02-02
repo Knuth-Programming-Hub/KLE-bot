@@ -8,11 +8,6 @@ module.exports = {
   usage:
     " ```!deleteevent\n\nPass the event S.No. according to !showevents to delete that particular event.```",
   execute: async (message, args) => {
-    if (!message.member.hasPermission("ADMINISTRATOR")) {
-      message.channel.send("You do not have permission to run this command.");
-      return;
-    }
-
     if (args.length !== 1) {
       message.channel.send(
         "Wrong format! Use !help deleteevent to know about usage."
