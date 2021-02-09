@@ -56,15 +56,22 @@ const compute = (args) => {
 };
 
 module.exports = {
-  name: "!addevent",
+  name: "addevent",
   permission: "*",
   description: "Add an event",
-  usage:
-    " ```!addevent\n\nFormat:\ndate: DD/MM/YYYY\ntime: HH:MM (24 hr)\ntitle: ...\nvenue: ...```",
-  execute: async (message, args) => {
+  usage: (prefix) => `\`\`\`
+${prefix}addevent
+
+Format:
+date: DD/MM/YYYY
+time: HH:MM (24 hr)
+title: ...
+venue: ...
+\`\`\``,
+  execute: async (message, args, prefix) => {
     if (!compute(args)) {
       message.channel.send(
-        "Wrong format! Use !help addevent to know about usage."
+        `Wrong format! Use ${prefix}help addevent to know about usage.`
       );
       return;
     }

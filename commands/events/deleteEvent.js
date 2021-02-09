@@ -2,15 +2,18 @@ const mongo = require("../../mongo");
 const Event = require("../../models/event.model");
 
 module.exports = {
-  name: "!deleteevent",
+  name: "deleteevent",
   permission: "*",
   description: "Delete an event",
-  usage:
-    " ```!deleteevent\n\nPass the event S.No. according to !showevents to delete that particular event.```",
-  execute: async (message, args) => {
+  usage: (prefix) => `\`\`\`
+${prefix}deleteevent
+
+Pass the event S.No. according to ${prefix}showevents to delete that particular event.
+\`\`\``,
+  execute: async (message, args, prefix) => {
     if (args.length !== 1) {
       message.channel.send(
-        "Wrong format! Use !help deleteevent to know about usage."
+        `Wrong format! Use ${prefix}help deleteevent to know about usage.`
       );
       return;
     }

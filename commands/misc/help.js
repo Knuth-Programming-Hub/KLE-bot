@@ -2,20 +2,30 @@ const Discord = require("discord.js");
 const getFiles = require("../../getFiles");
 
 module.exports = {
-  name: "!help",
+  name: "help",
   description: "List available commands",
-  usage:
-    "```!help\n\nuse !help to list all the commands\nuse !help <command-name> to get more details about the particular command```",
-  execute: async (message, args) => {
+  usage: (prefix) => `\`\`\`
+  ${prefix}help
+  use ${prefix}help to list all the commands
+  use ${prefix}help <command-name> to get more details about the particular command
+  \`\`\``,
+  execute: async (message, args, prefix) => {
     if (args.length >= 2) {
-      message.channel.send("Wrong Format! Try !help help to know more.");
+      message.channel.send(
+        `Wrong Format! Try ${prefix}help help to know more.`
+      );
       return;
     }
 
     if (args.length === 1) {
       if (args[0] === "help") {
         message.channel.send(
-          " ```!help\n\nuse !help to list all the commands\nuse !help <command-name> to get more details about the particular command```"
+          `\`\`\`
+${prefix}help
+
+use ${prefix}help to list all the commands
+use ${prefix}help <command-name> to get more details about the particular command
+\`\`\``
         );
 
         return;
@@ -28,9 +38,12 @@ module.exports = {
           // thanks: https://stackoverflow.com/a/423385/9950042
           var filename = filePath.replace(/^.*[\\\/]/, ""); // Get Filename.
           filename = filename.substring(0, filename.length - 3).toLowerCase(); // Remove extension.
+          if (filename === "invalid") {
+            continue;
+          }
           if (args[0].toLowerCase() == filename) {
             const command = require(filePath);
-            message.channel.send(command.usage);
+            message.channel.send(command.usage(prefix));
             flag = 1; // command exists.
             return;
           }
@@ -39,7 +52,7 @@ module.exports = {
 
       if (!flag)
         message.channel.send(
-          "Command not found! Try !help to view the available commands."
+          `Command not found! Try ${prefix}help to view the available commands.`
         );
       return;
     }

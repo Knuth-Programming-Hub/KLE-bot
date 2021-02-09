@@ -102,7 +102,7 @@ const handleFail = async (bot, dmChannel, discordUserId) => {
 
 const filter = (m) => m.content.startsWith("/");
 
-module.exports = async (bot, discordUser) => {
+module.exports = async (bot, discordUser, prefix) => {
   const dmChannel = await discordUser.createDM();
   const check = await checkIfVerified(bot, discordUser);
 
@@ -126,7 +126,7 @@ module.exports = async (bot, discordUser) => {
         if (validateEmail(email) === false) {
           flag = true;
           dmChannel.send(
-            "Hmm, that doesn't look like an email address. Send !verify on the server to try again."
+            `Hmm, that doesn't look like an email address. Send ${prefix}verify on the server to try again.`
           );
           handleFail(bot, dmChannel, discordUser.id);
           return;
@@ -136,7 +136,7 @@ module.exports = async (bot, discordUser) => {
         if (ch === false) {
           flag = true;
           dmChannel.send(
-            "Hmm, that doesn't look like a JIIT email address. Note that this verification is for **JIIT students** only. Send !verify on the server to try again."
+            `Hmm, that doesn't look like a JIIT email address. Note that this verification is for **JIIT students** only. Send ${prefix}verify on the server to try again.`
           );
           handleFail(bot, dmChannel, discordUser.id);
           return;
@@ -146,14 +146,16 @@ module.exports = async (bot, discordUser) => {
         if (sentOTP === null) {
           flag = true;
           dmChannel.send(
-            "It seems that there was some error. Send !verify on the server to try again."
+            `It seems that there was some error. Send ${prefix}verify on the server to try again.`
           );
           handleFail(bot, dmChannel, discordUser.id);
         }
       })
       .catch(() => {
         flag = true;
-        discordUser.send("Time's up! Send !verify on the server to try again.");
+        discordUser.send(
+          `Time's up! Send ${prefix}verify on the server to try again.`
+        );
         handleFail(bot, dmChannel, discordUser.id);
       });
 
@@ -174,7 +176,7 @@ module.exports = async (bot, discordUser) => {
           if (String(sentOTP) !== String(recvOTP)) {
             flag = true;
             dmChannel.send(
-              "Wrong OTP! Send !verify on the server to try again."
+              `Wrong OTP! Send ${prefix}verify on the server to try again.`
             );
             handleFail(bot, dmChannel, discordUser.id);
           } else {
@@ -189,7 +191,7 @@ module.exports = async (bot, discordUser) => {
         .catch(() => {
           flag = true;
           discordUser.send(
-            "Time's up! Send !verify on the server to try again."
+            `Time's up! Send ${prefix}verify on the server to try again.`
           );
           handleFail(bot, dmChannel, discordUser.id);
         });

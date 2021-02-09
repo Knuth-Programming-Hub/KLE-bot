@@ -5,7 +5,7 @@ const codeObj = {
   code: "",
 };
 
-const compute = (args) => {
+const compute = (args, prefix) => {
   const codePos = args.indexOf("\n");
 
   if (codePos === -1) return false;
@@ -13,7 +13,7 @@ const compute = (args) => {
   codeObj.filename = "";
   for (
     let i = codePos - 1;
-    args[i] !== " " && args.substring(0, i + 1) !== "!paste";
+    args[i] !== " " && args.substring(0, i + 1) !== `${prefix}paste`;
     --i
   )
     codeObj.filename += args[i];
@@ -25,15 +25,21 @@ const compute = (args) => {
 };
 
 module.exports = {
-  name: "!paste",
+  name: "paste",
   description: "Paste code and get a link for it",
-  usage: "```!paste\n\nFormat:\n!paste <filename>\n<code>```",
-  execute: async (message, recievedArgs) => {
+  usage: (prefix) => `\`\`\`
+${prefix}paste
+
+Format:
+${prefix}paste <filename>
+<code>
+\`\`\``,
+  execute: async (message, recievedArgs, prefix) => {
     const args = String(message.content.trim());
 
-    if (!compute(args)) {
+    if (!compute(args, prefix)) {
       message.channel.send(
-        "Wrong format! Make sure the code is not empty. Use !help paste to know about usage."
+        `Wrong format! Make sure the code is not empty. Use ${prefix}help paste to know about usage.`
       );
       return;
     }

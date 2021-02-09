@@ -21,11 +21,14 @@ const getCfUserInfo = async (list) => {
 };
 
 module.exports = {
-  name: "!ranklist",
+  name: "ranklist",
   description: "Get ranklist for JIIT students",
-  usage:
-    "```!ranklist\n\nFormat: !ranklist [batch]\nYou can enter multiple batches!```",
-  execute: async (message, args) => {
+  usage: (prefix) => `\`\`\`
+${prefix}ranklist
+Format: ${prefix}ranklist [batch]
+You can enter multiple batches!
+\`\`\``,
+  execute: async (message, args, prefix) => {
     for (let elem of args) elem = Number(elem);
 
     let filter = {};
