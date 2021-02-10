@@ -151,7 +151,7 @@ module.exports = async (bot, discordUser, prefix) => {
           handleFail(bot, dmChannel, discordUser.id);
         }
       })
-      .catch(() => {
+      .catch((err) => {
         flag = true;
         discordUser.send(
           `Time's up! Send ${prefix}verify on the server to try again.`
@@ -183,12 +183,14 @@ module.exports = async (bot, discordUser, prefix) => {
             removeRole(bot, discordUser, "Member");
             addRole(bot, discordUser, "JIITian");
             addRole(bot, discordUser, batchTag);
+            user.updateBatch(discordUser.id, batchTag);
+
             dmChannel.send(
               "Yay! You have verified yourself as a JIITian and are now officially a member of the KPH Discord server! 🎉"
             );
           }
         })
-        .catch(() => {
+        .catch((err) => {
           flag = true;
           discordUser.send(
             `Time's up! Send ${prefix}verify on the server to try again.`

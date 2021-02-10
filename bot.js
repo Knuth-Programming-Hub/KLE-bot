@@ -76,7 +76,7 @@ bot.on("message", async (message) => {
   if (message.channel.type === "dm") return;
 
   if (message.author.id === process.env.TLE_ID) {
-    handleIdentify(bot, message);
+    handleIdentify(message);
     return;
   }
 
@@ -90,14 +90,14 @@ bot.on("message", async (message) => {
   const command = args.shift().toLowerCase();
 
   if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
-    if (command === `${prefix}verify`) {
+    if (command === "verify") {
       try {
         await verify(bot, message.author, prefix);
       } catch (error) {
         bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
       }
     }
-    if (command !== `${prefix}clearchannel`) return;
+    if (command !== "clearchannel") return;
   }
 
   // If a command is not present, log the default message
