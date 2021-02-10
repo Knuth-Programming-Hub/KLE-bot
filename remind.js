@@ -2,16 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const mongo = require("./mongo");
 const Event = require("./models/event.model");
 
-const convertTZ = (date, tzString) => {
-  return new Date(
-    (typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {
-      timeZone: tzString,
-    })
-  );
-};
-
 const getDateAndTime = (dateObj) => {
-  dateObj = convertTZ(dateObj, "Asia/Kolkata");
   dateObj = dateObj.toString();
 
   const pos = dateObj.indexOf(":") - 2;

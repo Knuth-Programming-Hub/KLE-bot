@@ -24,6 +24,13 @@ const compute = (args, prefix) => {
   return codeObj.code !== "";
 };
 
+const getDateAndTime = (dateObj) => {
+  dateObj = dateObj.toString();
+
+  const pos = dateObj.indexOf(":") - 2;
+  return dateObj.substring(4, pos) + dateObj.substring(pos, pos + 5) + " (IST)";
+};
+
 module.exports = {
   name: "paste",
   description: "Paste code and get a link for it",
@@ -53,13 +60,15 @@ ${prefix}paste <filename>
       })
       .then((gist) => {
         const time = new Date();
+        const offsetMinutes = 330; // for IST (+5:30)
+        time.setMinutes(time.getMinutes() - offsetMinutes);
         const successMessage = {
           content: `<@${message.author.id}> the code is ready! 😀`,
           embed: {
             title: "Find it here!",
             url: `${gist.data.html_url}`,
             color: 4045991,
-            description: `Created at ${time.toString()}.`,
+            description: `Created at ${getDateAndTime(time)}.`,
           },
         };
         message.channel.send(successMessage);

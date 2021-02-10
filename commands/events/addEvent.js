@@ -1,6 +1,9 @@
 const mongo = require("../../mongo");
 const Event = require("../../models/event.model");
 
+// The date is entered according to IST
+// but the bot will consider it as UTC
+// so, I have manually changed the date 😅
 const getDate = (date, time) => {
   const dateArr = date.split(/[-/]/);
   dateArr[1] = String(parseInt(dateArr[1]) - 1);
@@ -9,6 +12,8 @@ const getDate = (date, time) => {
 
   // new Date(year, month, date, hours, minutes, seconds, ms)
   const res = new Date(...dateArr, ...timeArr);
+  const offsetMinutes = 330; // for IST (+5:30)
+  res.setMinutes(res.getMinutes() - offsetMinutes);
   return res;
 };
 
