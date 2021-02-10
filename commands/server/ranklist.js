@@ -63,6 +63,7 @@ You can enter multiple batches!
     }
 
     list.sort((a, b) => b[2] - a[2]);
+    list = list.slice(0, Math.min(11, list.length)); // taking only top 10
 
     // presentation
     for (let i in list) {
