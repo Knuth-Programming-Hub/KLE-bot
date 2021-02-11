@@ -1,6 +1,9 @@
 const mongo = require("../../mongo");
 const Event = require("../../models/event.model");
 
+// The date is entered according to IST
+// but the bot will consider it as UTC
+// so, I have manually changed the date 😅
 const getDate = (date, time) => {
   const dateArr = date.split(/[-/]/);
   dateArr[1] = String(parseInt(dateArr[1]) - 1);
@@ -9,6 +12,8 @@ const getDate = (date, time) => {
 
   // new Date(year, month, date, hours, minutes, seconds, ms)
   const res = new Date(...dateArr, ...timeArr);
+  const offsetMinutes = 330; // for IST (+5:30)
+  res.setMinutes(res.getMinutes() - offsetMinutes);
   return res;
 };
 
@@ -56,15 +61,22 @@ const compute = (args) => {
 };
 
 module.exports = {
-  name: "!addevent",
+  name: "addevent",
   permission: "*",
   description: "Add an event",
-  usage:
-    " ```!addevent\n\nFormat:\ndate: DD/MM/YYYY\ntime: HH:MM (24 hr)\ntitle: ...\nvenue: ...```",
-  execute: async (message, args) => {
+  usage: (prefix) => `\`\`\`
+${prefix}addevent
+
+Format:
+date: DD/MM/YYYY
+time: HH:MM (24 hr)
+title: ...
+venue: ...
+\`\`\``,
+  execute: async (message, args, prefix) => {
     if (!compute(args)) {
       message.channel.send(
-        "Wrong format! Use !help addevent to know about usage."
+        `Wrong format! Use ${prefix}help addevent to know about usage.`
       );
       return;
     }

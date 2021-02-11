@@ -1,9 +1,9 @@
 module.exports = {
-  name: "!invalid",
+  name: "invalid",
   description: "Invalid Command",
-  execute(message, args) {
+  execute(message, args, prefix) {
     message.channel.send(
-      "Looks like that's an invalid command , Try !help for reference."
+      `Looks like that's an invalid command , Try ${prefix}help for reference.`
     );
   },
 };

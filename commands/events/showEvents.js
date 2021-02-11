@@ -2,16 +2,7 @@ const Discord = require("discord.js");
 const mongo = require("../../mongo");
 const Event = require("../../models/event.model");
 
-const convertTZ = (date, tzString) => {
-  return new Date(
-    (typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {
-      timeZone: tzString,
-    })
-  );
-};
-
 const getDateAndTime = (dateObj) => {
-  dateObj = convertTZ(dateObj, "Asia/Kolkata");
   dateObj = dateObj.toString();
 
   const pos = dateObj.indexOf(":") - 2;
@@ -51,10 +42,14 @@ const compute = (eventObjects) => {
 };
 
 module.exports = {
-  name: "!showevents",
+  name: "showevents",
   description: "Show all events",
-  usage: " ```!showevents\n\nType the command to view all the events.```",
-  execute: async (message, args) => {
+  usage: (prefix) => `\`\`\`
+${prefix}showevents
+
+Type the command to view all the events.
+\`\`\``,
+  execute: async (message, args, prefix) => {
     await mongo().then(async (mongoose) => {
       await Event.find()
         .sort("date")

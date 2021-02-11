@@ -43,17 +43,26 @@ const updateFailCount = async (discordUserId) => {
   return count;
 };
 
-const updateCfHandle = async (discordUserId, cfHandle, batch = null) => {
-  let update = { cfHandle };
-  if (batch !== null) update.batch = batch;
-
+const updateCfHandle = async (discordUserId, cfHandle) => {
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOneAndUpdate({ discordId: discordUserId }, update);
+      await User.findOneAndUpdate({ discordId: discordUserId }, { cfHandle });
     } finally {
       mongoose.connection.close();
     }
   });
+};
+
+const updateBatch = async (discordUserId, batch) => {
+  batch = Number(batch);
+  await mongo().then(async (mongoose) => {
+    try {
+      await User.findOneAndUpdate({ discordId: discordUserId }, { batch });
+    } finally {
+      mongoose.connection.close();
+    }
+  });
+  console.log("updated", batch);
 };
 
 const existsInUsers = async (discordUserId) => {
@@ -86,6 +95,7 @@ module.exports = {
   add,
   updateFailCount,
   updateCfHandle,
+  updateBatch,
   existsInUsers,
   remove,
 };

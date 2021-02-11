@@ -62,27 +62,9 @@ const ban = (bot, discordUserId) => {
   });
 };
 
-const getBatch = async (bot, discordUserId) => {
-  let batch = null;
-  await bot.guilds.fetch(process.env.SERVER_GUILD_ID).then((guild) => {
-    guild.members.fetch(discordUserId).then((member) => {
-      const roles = member.roles.cache.array();
-      for (let elem of roles) {
-        if (elem.name.startsWith("20") === true) {
-          batch = Number(elem.name);
-          break;
-        }
-      }
-    });
-  });
-
-  return batch;
-};
-
 module.exports = {
   addRole,
   hasRole,
   removeRole,
   ban,
-  getBatch,
 };

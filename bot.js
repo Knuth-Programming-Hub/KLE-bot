@@ -8,6 +8,7 @@ const user = require("./utils/usersHandlers");
 const { sendCaptcha } = require("./utils/captcha");
 const { handleIdentify } = require("./utils/TLE");
 const { hasRole } = require("./utils/guildMemberHandlers");
+const getPrefix = require("./utils/getCommandPrefix");
 
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
@@ -22,14 +23,20 @@ bot.on("guildMemberAdd", async (member) => {
 
     if (!channel) return;
 
+    const prefix = await getPrefix();
+
     let name = member.user.username;
     let welcomeEmbed = new Discord.MessageEmbed()
       .setColor("#176ffc")
       .setTitle(`Yay! ${name} you made it to KPH discord Server `)
       .setDescription(
-        `I am your friendly bot written in Javascript.\n\n **Check your DM to solve the captcha**.\n\n*If* you wish to be identified as a JIITian, please send !verify in the #verify channel :D.`
+        `
+I am your friendly bot written in Javascript.
+**Check your DM to solve the captcha**.
+*If* you wish to be identified as a JIITian, please send ${prefix}verify in the #verify channel :D.
+`
       )
-      .setFooter("Use !help command to know more about me ");
+      .setFooter(`Use ${prefix}help command to know more about me.`);
     channel.send(welcomeEmbed);
 
     const passed = await sendCaptcha(bot, member.user);
@@ -69,27 +76,33 @@ bot.on("message", async (message) => {
   if (message.channel.type === "dm") return;
 
   if (message.author.id === process.env.TLE_ID) {
-    handleIdentify(bot, message);
+    handleIdentify(message);
     return;
   }
 
-  const args = message.content.trim().split(/\r\n|\r|\n| +/); // removes any whitespace in the message
+  const prefix = await getPrefix();
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content
+    .slice(prefix.length)
+    .trim()
+    .split(/\r\n|\r|\n| +/); // removes any whitespace in the message
   const command = args.shift().toLowerCase();
 
   if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
-    if (command === "!verify") {
+    if (command === "verify") {
       try {
-        await verify(bot, message.author);
+        await verify(bot, message.author, prefix);
       } catch (error) {
         bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
       }
     }
-    if (command !== "!clearchannel") return;
+    if (command !== "clearchannel") return;
   }
 
   // If a command is not present, log the default message
   if (!bot.commands.has(command)) {
-    if (command[0] === "!") bot.commands.get("!invalid").execute(message, args);
+    bot.commands.get("invalid").execute(message, args, prefix);
     return;
   }
 
@@ -103,7 +116,7 @@ bot.on("message", async (message) => {
 
   // otherwise execute that command
   try {
-    await bot.commands.get(command).execute(message, args);
+    await bot.commands.get(command).execute(message, args, prefix);
   } catch (error) {
     bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
     message.reply("There was some error in executing that command! 🙁");

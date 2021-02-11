@@ -1,7 +1,6 @@
 const { updateCfHandle } = require("./usersHandlers");
-const { getBatch } = require("./guildMemberHandlers");
 
-const handleIdentify = async (bot, message) => {
+const handleIdentify = async (message) => {
   if (message.embeds.length === 0) return;
 
   const text = message.embeds[0].description;
@@ -11,8 +10,7 @@ const handleIdentify = async (bot, message) => {
   const discordId = text.substring(text.indexOf("<") + 2, text.indexOf(">"));
   const cfHandle = text.substring(text.indexOf("[") + 1, text.indexOf("]"));
 
-  const batch = await getBatch(bot, discordId);
-  updateCfHandle(discordId, cfHandle, batch);
+  updateCfHandle(discordId, cfHandle);
 };
 
 module.exports = {

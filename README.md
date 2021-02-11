@@ -10,6 +10,7 @@ The purpose of this bot is to automate various tasks of the Hub and at the same 
 - [x] Identifying and Verifying [JIIT](http://www.jiit.ac.in/) students
 - [x] Creating link for a particular code
 - [x] Year-wise ranklists
+- [x] Custom command prefix
 
 ## Future Prospects
 
@@ -64,8 +65,9 @@ If the project doesn't do something you need/want it to do or you have a new fea
 
 ## Usage
 
-Use `!help` to get the list of available commands.
-To get more details about a specific command you can use `!help <command-name>`.
+- Use `!help` to get the list of available commands.
+- To get more details about a specific command you can use `!help <command-name>`.
+- In order to run admin-only commands, you need to have the _Admin_ role, which needs to be created in your Discord server and assign it to yourself/other administrators.
 
 ## License
 
