@@ -1,4 +1,5 @@
 const octokit = require("../../octokit");
+const { getDateAndTime } = require("../../utils/getDateAndTime");
 
 const codeObj = {
   filename: "",
@@ -22,13 +23,6 @@ const compute = (args, prefix) => {
   codeObj.code = args.substring(codePos + 1);
 
   return codeObj.code !== "";
-};
-
-const getDateAndTime = (dateObj) => {
-  dateObj = dateObj.toString();
-
-  const pos = dateObj.indexOf(":") - 2;
-  return dateObj.substring(4, pos) + dateObj.substring(pos, pos + 5) + " (IST)";
 };
 
 module.exports = {
@@ -59,16 +53,18 @@ ${prefix}paste <filename>
         },
       })
       .then((gist) => {
-        const time = new Date();
+        const dateObj = new Date();
         const offsetMinutes = 330; // for IST (+5:30)
-        time.setMinutes(time.getMinutes() - offsetMinutes);
+        dateObj.setMinutes(dateObj.getMinutes() - offsetMinutes);
+        const dateAndTime = getDateAndTime(dateObj);
+        let timeString = dateAndTime[0] + dateAndTime[1];
         const successMessage = {
           content: `<@${message.author.id}> the code is ready! 😀`,
           embed: {
             title: "Find it here!",
             url: `${gist.data.html_url}`,
             color: 4045991,
-            description: `Created at ${getDateAndTime(time)}.`,
+            description: `Created at ${timeString}.`,
           },
         };
         message.channel.send(successMessage);

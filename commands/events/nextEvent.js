@@ -1,16 +1,7 @@
 const Discord = require("discord.js");
 const mongo = require("../../mongo");
 const Event = require("../../models/event.model");
-
-const getDateAndTime = (dateObj) => {
-  dateObj = dateObj.toString();
-
-  const pos = dateObj.indexOf(":") - 2;
-  return [
-    dateObj.substring(4, pos),
-    dateObj.substring(pos, pos + 5) + " (IST)",
-  ];
-};
+const { getDateAndTime } = require("../../utils/getDateAndTime");
 
 const compute = (eventObject) => {
   const dateAndTime = getDateAndTime(eventObject.date);
