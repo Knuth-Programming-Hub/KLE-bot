@@ -4,8 +4,6 @@ const Discord = require("discord.js");
 const getFiles = require("./getFiles");
 const remind = require("./remind");
 const verify = require("./verify");
-const user = require("./utils/usersHandlers");
-const { sendCaptcha } = require("./utils/captcha");
 const { handleIdentify } = require("./utils/TLE");
 const { hasRole } = require("./utils/guildMemberHandlers");
 const getPrefix = require("./utils/getCommandPrefix");
@@ -38,15 +36,6 @@ I am your friendly bot written in Javascript.
       )
       .setFooter(`Use ${prefix}help command to know more about me.`);
     channel.send(welcomeEmbed);
-
-    const passed = await sendCaptcha(bot, member.user);
-    if (passed === false) return;
-
-    // adding the member to the "users" collection in DB
-    const exists = await user.existsInUsers(member.id);
-    if (exists === false) {
-      await user.add(member.id);
-    }
   } catch (error) {
     bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
   }
