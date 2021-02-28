@@ -22,7 +22,7 @@ const updateFailCount = async (discordUserId) => {
   await mongo().then(async (mongoose) => {
     try {
       await User.findOne({ discordId: discordUserId }, (err, doc) => {
-        if (doc) {
+        if (doc !== null) {
           count = doc.failCount + 1;
         }
       });
@@ -62,7 +62,6 @@ const updateBatch = async (discordUserId, batch) => {
       mongoose.connection.close();
     }
   });
-  console.log("updated", batch);
 };
 
 const existsInUsers = async (discordUserId) => {
@@ -71,7 +70,7 @@ const existsInUsers = async (discordUserId) => {
   await mongo().then(async (mongoose) => {
     try {
       await User.findOne({ discordId: discordUserId }, (err, doc) => {
-        if (doc) exists = true;
+        if (doc !== null) exists = true;
       });
     } finally {
       mongoose.connection.close();
