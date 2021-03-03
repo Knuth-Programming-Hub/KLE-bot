@@ -60,12 +60,16 @@ const compute = (args) => {
   return flag ? true : false;
 };
 
+const parentName = "events";
+const name = "add";
+
 module.exports = {
-  name: "addevent",
+  parentName,
+  name,
   permission: "*",
   description: "Add an event",
   usage: (prefix) => `\`\`\`
-${prefix}addevent
+${prefix}${parentName} ${name}
 
 Format:
 date: DD/MM/YYYY
@@ -76,7 +80,7 @@ venue: ...
   execute: async (message, args, prefix) => {
     if (!compute(args)) {
       message.channel.send(
-        `Wrong format! Use ${prefix}help addevent to know about usage.`
+        `Wrong format! Use ${prefix}help ${parentName} ${name} to know about usage.`
       );
       return;
     }

@@ -18,11 +18,15 @@ const compute = (eventObject) => {
   return nextEvent;
 };
 
+const parentName = "events";
+const name = "next";
+
 module.exports = {
-  name: "nextevent",
+  parentName,
+  name,
   description: "Show next event",
   usage: (prefix) => `\`\`\`
-${prefix}nextevent
+${prefix}${parentName} ${name}
 
 Type the command to view the next upcoming event.
 \`\`\``,

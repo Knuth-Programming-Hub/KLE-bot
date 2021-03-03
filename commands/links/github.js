@@ -1,10 +1,14 @@
 const Discord = require("discord.js");
 
+const parentName = "links";
+const name = "github";
+
 module.exports = {
-  name: "github",
+  parentName,
+  name,
   description: "Github Org",
   usage: (prefix) => `\`\`\`
-${prefix}github
+${prefix}${parentName} ${name}
 
 Type the command to get the link to the GitHub organisation.
 \`\`\``,
