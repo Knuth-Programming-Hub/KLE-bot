@@ -30,13 +30,13 @@ const displayUsage = async (name, description, prefix) => {
   return str;
 };
 
-const executeSubCommand = async (name, message, args, prefix) => {
-  const subCommandName = args.shift().toLowerCase();
-
+const getSubCommand = async (name, args) => {
   let childrenPaths;
   await getChildren(name).then((files) => {
     childrenPaths = files;
   });
+
+  const subCommandName = args[0].toLowerCase();
 
   for (const file of childrenPaths) {
     let filePath = String(file);
@@ -45,13 +45,14 @@ const executeSubCommand = async (name, message, args, prefix) => {
 
     if (subCommandName === fileName) {
       const command = require(filePath);
-      command.execute(message, args, prefix);
-      break;
+      return command;
     }
   }
+
+  return null;
 };
 
-const getCommandObj = (name, description, message, args, prefix) => {
+const getCommandObj = (name, description) => {
   return {
     name,
     description,
@@ -60,7 +61,12 @@ const getCommandObj = (name, description, message, args, prefix) => {
       if (args.length === 0) {
         message.channel.send(await displayUsage(name, description, prefix));
       } else {
-        executeSubCommand(name, message, args, prefix);
+        const subCommand = await getSubCommand(name, args);
+        if (subCommand === null)
+          message.channel.send(
+            `Command not found! try ${prefix}help ${name} to view the available commands.`
+          );
+        else subCommand.execute(message, args, prefix);
       }
     },
   };
@@ -69,6 +75,6 @@ const getCommandObj = (name, description, message, args, prefix) => {
 module.exports = {
   getChildren,
   displayUsage,
-  executeSubCommand,
+  getSubCommand,
   getCommandObj,
 };
