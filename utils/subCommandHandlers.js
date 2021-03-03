@@ -52,10 +52,11 @@ const getSubCommand = async (name, args) => {
   return null;
 };
 
-const getCommandObj = (name, description) => {
+const getCommandObj = (name, description, isParent) => {
   return {
     name,
     description,
+    isParent,
     usage: async (prefix) => await displayUsage(name, description, prefix),
     execute: async (message, args, prefix) => {
       if (args.length === 0) {
