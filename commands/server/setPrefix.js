@@ -1,5 +1,6 @@
 const mongo = require("../../mongo");
 const prefixModel = require("../../models/prefix.model");
+const { hasRole } = require("../../utils/guildMemberHandlers");
 
 module.exports = {
   name: "setprefix",
@@ -11,7 +12,13 @@ ${prefix}setprefix
 Format:
 ${prefix}setprefix <command-prefix>
 \`\`\``,
-  execute: async (message, args, prefix) => {
+  execute: async (bot, message, args, prefix) => {
+    const admin = await hasRole(bot, message.author.id, "Admin");
+    if (admin === false) {
+      message.reply("you do not have permission to run this command.");
+      return;
+    }
+
     if (args.length >= 2) {
       message.channel.send(
         `Wrong format! Use ${prefix}help setprefix to know about usage.`

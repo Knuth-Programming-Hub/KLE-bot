@@ -12,7 +12,7 @@ ${prefix}${parentName} ${name}
 
 Type the command to get the link to the Facebook Group.
 \`\`\``,
-  execute(message, args, prefix) {
+  execute: (bot, message, args, prefix) => {
     const facebook = new Discord.MessageEmbed()
       .setTitle("Join us on Facebook")
       .setURL("https://www.facebook.com/groups/jiit.knuth");

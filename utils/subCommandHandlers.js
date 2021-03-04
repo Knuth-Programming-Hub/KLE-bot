@@ -58,7 +58,7 @@ const getCommandObj = (name, description, isParent) => {
     description,
     isParent,
     usage: async (prefix) => await displayUsage(name, description, prefix),
-    execute: async (message, args, prefix) => {
+    execute: async (bot, message, args, prefix) => {
       if (args.length === 0) {
         message.channel.send(await displayUsage(name, description, prefix));
       } else {
@@ -67,7 +67,10 @@ const getCommandObj = (name, description, isParent) => {
           message.channel.send(
             `Command not found! try ${prefix}help ${name} to view the available commands.`
           );
-        else subCommand.execute(message, args, prefix);
+        else {
+          args.splice(0, 1);
+          subCommand.execute(bot, message, args, prefix);
+        }
       }
     },
   };

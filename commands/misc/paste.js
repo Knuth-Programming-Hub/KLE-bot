@@ -35,7 +35,7 @@ Format:
 ${prefix}paste <filename>
 <code>
 \`\`\``,
-  execute: async (message, recievedArgs, prefix) => {
+  execute: async (bot, message, recievedArgs, prefix) => {
     const args = String(message.content.trim());
 
     if (!compute(args, prefix)) {

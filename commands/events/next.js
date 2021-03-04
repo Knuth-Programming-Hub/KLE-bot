@@ -30,7 +30,7 @@ ${prefix}${parentName} ${name}
 
 Type the command to view the next upcoming event.
 \`\`\``,
-  execute: async (message, args, prefix) => {
+  execute: async (bot, message, args, prefix) => {
     await mongo().then(async (mongoose) => {
       try {
         await Event.find()
