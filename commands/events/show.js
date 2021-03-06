@@ -32,15 +32,19 @@ const compute = (eventObjects) => {
   return events;
 };
 
+const parentName = "events";
+const name = "show";
+
 module.exports = {
-  name: "showevents",
+  parentName,
+  name,
   description: "Show all events",
   usage: (prefix) => `\`\`\`
-${prefix}showevents
+${prefix}${parentName} ${name}
 
 Type the command to view all the events.
 \`\`\``,
-  execute: async (message, args, prefix) => {
+  execute: async (bot, message, args, prefix) => {
     await mongo().then(async (mongoose) => {
       await Event.find()
         .sort("date")

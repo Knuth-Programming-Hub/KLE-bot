@@ -28,7 +28,7 @@ ${prefix}ranklist
 Format: ${prefix}ranklist [batch]
 You can enter multiple batches!
 \`\`\``,
-  execute: async (message, args, prefix) => {
+  execute: async (bot, message, args, prefix) => {
     for (let elem of args) elem = Number(elem);
 
     let filter = {};

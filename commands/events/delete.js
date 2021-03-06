@@ -1,19 +1,30 @@
 const mongo = require("../../mongo");
 const Event = require("../../models/event.model");
+const { hasRole } = require("../../utils/guildMemberHandlers");
+
+const parentName = "events";
+const name = "delete";
 
 module.exports = {
-  name: "deleteevent",
+  parentName,
+  name,
   permission: "*",
   description: "Delete an event",
   usage: (prefix) => `\`\`\`
-${prefix}deleteevent
+${prefix}${parentName} ${name}
 
-Pass the event S.No. according to ${prefix}showevents to delete that particular event.
+Pass the event S.No. according to ${prefix}${parentName} showevents to delete that particular event.
 \`\`\``,
-  execute: async (message, args, prefix) => {
+  execute: async (bot, message, args, prefix) => {
+    const admin = await hasRole(bot, message.author.id, "Admin");
+    if (admin === false) {
+      message.reply("you do not have permission to run this command.");
+      return;
+    }
+
     if (args.length !== 1) {
       message.channel.send(
-        `Wrong format! Use ${prefix}help deleteevent to know about usage.`
+        `Wrong format! Use ${prefix}help ${parentName} ${name} to know about usage.`
       );
       return;
     }

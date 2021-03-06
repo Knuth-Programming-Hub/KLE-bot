@@ -1,5 +1,6 @@
 const mongo = require("../../mongo");
 const Event = require("../../models/event.model");
+const { hasRole } = require("../../utils/guildMemberHandlers");
 
 // The date is entered according to IST
 // but the bot will consider it as UTC
@@ -60,12 +61,16 @@ const compute = (args) => {
   return flag ? true : false;
 };
 
+const parentName = "events";
+const name = "add";
+
 module.exports = {
-  name: "addevent",
+  parentName,
+  name,
   permission: "*",
   description: "Add an event",
   usage: (prefix) => `\`\`\`
-${prefix}addevent
+${prefix}${parentName} ${name}
 
 Format:
 date: DD/MM/YYYY
@@ -73,10 +78,16 @@ time: HH:MM (24 hr)
 title: ...
 venue: ...
 \`\`\``,
-  execute: async (message, args, prefix) => {
+  execute: async (bot, message, args, prefix) => {
+    const admin = await hasRole(bot, message.author.id, "Admin");
+    if (admin === false) {
+      message.reply("you do not have permission to run this command.");
+      return;
+    }
+
     if (!compute(args)) {
       message.channel.send(
-        `Wrong format! Use ${prefix}help addevent to know about usage.`
+        `Wrong format! Use ${prefix}help ${parentName} ${name} to know about usage.`
       );
       return;
     }

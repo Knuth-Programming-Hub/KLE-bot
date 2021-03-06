@@ -1,85 +1,105 @@
 const Discord = require("discord.js");
-const getFiles = require("../../getFiles");
+
+const helpCommandUsage = (prefix) => {
+  return `\`\`\`
+${prefix}help
+
+use ${prefix}help to list all the commands
+use ${prefix}help <command-name> to get more details about the particular command
+\`\`\``;
+};
 
 module.exports = {
   name: "help",
   description: "List available commands",
-  usage: (prefix) => `\`\`\`
-  ${prefix}help
-  use ${prefix}help to list all the commands
-  use ${prefix}help <command-name> to get more details about the particular command
-  \`\`\``,
-  execute: async (message, args, prefix) => {
-    if (args.length >= 2) {
+  usage: (prefix) => helpCommandUsage(prefix),
+  execute: async (bot, message, args, prefix) => {
+    if (args.length >= 3) {
       message.channel.send(
         `Wrong Format! Try ${prefix}help help to know more.`
       );
       return;
     }
 
-    if (args.length === 1) {
-      if (args[0] === "help") {
-        message.channel.send(
-          `\`\`\`
-${prefix}help
+    const commands = [...bot.commands.values()];
 
-use ${prefix}help to list all the commands
-use ${prefix}help <command-name> to get more details about the particular command
-\`\`\``
-        );
-
+    // help for a command is requested
+    if (args.length > 0) {
+      if (args.length === 1 && args[0] === "help") {
+        message.channel.send(helpCommandUsage(prefix));
         return;
       }
 
       let flag = 0;
-      await getFiles("./commands").then((files) => {
-        for (let file of files) {
-          let filePath = String(file);
-          // thanks: https://stackoverflow.com/a/423385/9950042
-          var filename = filePath.replace(/^.*[\\\/]/, ""); // Get Filename.
-          filename = filename.substring(0, filename.length - 3).toLowerCase(); // Remove extension.
-          if (filename === "invalid") {
-            continue;
-          }
-          if (args[0].toLowerCase() == filename) {
-            const command = require(filePath);
-            message.channel.send(command.usage(prefix));
-            flag = 1; // command exists.
-            return;
+      if (args.length == 1) {
+        for (const command of commands) {
+          if (
+            command.name !== "invalid" &&
+            command.parentName === undefined &&
+            args[0].toLowerCase() === command.name
+          ) {
+            message.channel.send(await command.usage(prefix));
+            flag = 1;
+            break;
           }
         }
-      });
+      } else {
+        for (const command of commands) {
+          if (args[0].toLowerCase() === command.name) {
+            if (command.isParent === true) {
+              flag = 3;
+              break;
+            }
+
+            flag = 2;
+          }
+
+          if (
+            args[0].toLowerCase() === command.parentName &&
+            args[1].toLowerCase() === command.name
+          ) {
+            message.channel.send(await command.usage(prefix));
+            flag = 1;
+            break;
+          }
+        }
+      }
 
       if (!flag)
         message.channel.send(
           `Command not found! Try ${prefix}help to view the available commands.`
         );
+      else if (flag == 2)
+        message.channel.send(
+          `\`${prefix}${args[0].toLowerCase()}\` doesn't have any subcommands! Try ${prefix}help to view the available commands.`
+        );
+      else if (flag == 3)
+        message.channel.send(
+          `\`${prefix}${args[0].toLowerCase()}\` doesn't have such subcommand! Try ${prefix}help ${args[0].toLowerCase()} to view the available commands.`
+        );
+
       return;
     }
 
-    let commands = [];
-    await getFiles("./commands").then((files) => {
-      for (let file of files) {
-        let filePath = String(file);
-        var filename = filePath.replace(/^.*[\\\/]/, "");
-        filename = filename.substring(0, filename.length - 3).toLowerCase();
-        if (filename === "invalid") {
-          continue;
-        }
-        const command = require(filePath);
-        commands.push({
-          name: `${command.name} ${
-            command.permission === undefined ? "" : command.permission
-          }`,
-          value: command.description,
-          inline: false,
-        });
-      }
-    });
+    // help - display available commands
+
+    let commandList = [];
+    for (const command of commands) {
+      if (command.name === "invalid" || command.parentName !== undefined)
+        continue;
+
+      commandList.push({
+        name: `${command.name} ${
+          command.permission === undefined ? "" : command.permission
+        }`,
+        value: command.description,
+        inline: false,
+      });
+    }
 
     const commandsEmbedded = new Discord.MessageEmbed()
       .setTitle("Available commands")
-      .addFields(commands)
+      .addFields(commandList)
       .setFooter("* - only for admins");
 
     message.channel.send(commandsEmbedded);

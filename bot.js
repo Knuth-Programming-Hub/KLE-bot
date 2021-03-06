@@ -5,7 +5,6 @@ const getFiles = require("./getFiles");
 const remind = require("./remind");
 const verify = require("./verify");
 const { handleIdentify } = require("./utils/TLE");
-const { hasRole } = require("./utils/guildMemberHandlers");
 const getPrefix = require("./utils/getCommandPrefix");
 const reactionHandler = require("./utils/reactionHandler");
 
@@ -48,7 +47,7 @@ bot.on("ready", () => {
     .then((files) => {
       for (const file of files) {
         const command = require(file);
-        bot.commands.set(command.name, command);
+        bot.commands.set(command.name, command); // subcommands are included
       }
     })
     .catch((error) => {
@@ -93,23 +92,18 @@ bot.on("message", async (message) => {
     if (command !== "clearchannel") return;
   }
 
-  // If a command is not present, log the default message
-  if (!bot.commands.has(command)) {
-    bot.commands.get("invalid").execute(message, args, prefix);
+  // command is not present or it is a subcommand
+  if (
+    !bot.commands.has(command) ||
+    bot.commands.get(command).parentName !== undefined
+  ) {
+    bot.commands.get("invalid").execute(bot, message, args, prefix);
     return;
   }
 
-  if (bot.commands.get(command).permission === "*") {
-    const admin = await hasRole(bot, message.author.id, "Admin");
-    if (admin === false) {
-      message.reply("you do not have permission to run this command.");
-      return;
-    }
-  }
-
-  // otherwise execute that command
+  // execute the command
   try {
-    await bot.commands.get(command).execute(message, args, prefix);
+    await bot.commands.get(command).execute(bot, message, args, prefix);
   } catch (error) {
     bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
     message.reply("There was some error in executing that command! 🙁");
