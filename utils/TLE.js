@@ -1,4 +1,4 @@
-const { updateCfHandle } = require("./usersHandlers");
+const { updateCfHandle } = require("./discordMemberHandlers");
 
 const handleIdentify = async (message) => {
   if (message.embeds.length === 0) return;
