@@ -62,18 +62,20 @@ const updateBatch = async (discordUserId, batch) => {
   });
 };
 
+const updateIsMember = async (discordUserId, isMember) => {
+  const mongoose = await mongo();
+  await User.findByIdAndUpdate(discordUserId, { isMember });
+  await mongoose.connection.close();
+};
+
 const existsInUsers = async (discordUserId) => {
   let exists = false;
 
-  await mongo().then(async (mongoose) => {
-    try {
-      await User.findById(discordUserId, (err, doc) => {
-        if (doc !== null) exists = true;
-      });
-    } finally {
-      mongoose.connection.close();
-    }
+  const mongoose = await mongo();
+  await User.findById(discordUserId, (err, doc) => {
+    if (doc !== null) exists = true;
   });
+  await mongoose.connection.close();
 
   return exists;
 };
@@ -93,6 +95,7 @@ module.exports = {
   updateFailCount,
   updateCfHandle,
   updateBatch,
+  updateIsMember,
   existsInUsers,
   remove,
 };

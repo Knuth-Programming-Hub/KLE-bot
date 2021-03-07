@@ -4,15 +4,11 @@ const prefixModel = require("../models/prefix.model");
 module.exports = async () => {
   let commandPrefix = "!"; // default prefix
 
-  await mongo().then(async (mongoose) => {
-    try {
-      await prefixModel.findById(process.env.SERVER_GUILD_ID, (err, doc) => {
-        if (doc) commandPrefix = doc.prefix;
-      });
-    } finally {
-      mongoose.connection.close();
-    }
+  const mongoose = await mongo();
+  await prefixModel.findById(process.env.SERVER_GUILD_ID, (err, doc) => {
+    if (doc != null) commandPrefix = doc.prefix;
   });
+  await mongoose.connection.close();
 
   return commandPrefix;
 };
