@@ -1,5 +1,5 @@
-const mongo = require("../mongo");
-const prefixModel = require("../models/prefix.model");
+const mongo = require("../../mongo");
+const prefixModel = require("../../models/prefix.model");
 
 module.exports = async () => {
   let commandPrefix = "!"; // default prefix
