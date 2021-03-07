@@ -17,7 +17,7 @@ Be very careful when using this command!
       return;
     }
     message.channel.messages.fetch().then((res) => {
-      message.channel.bulkDelete(res);
+      message.channel.bulkDelete(res, true);
     });
   },
 };
