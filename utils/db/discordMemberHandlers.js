@@ -1,5 +1,5 @@
-const mongo = require("../mongo");
-const User = require("../models/discord-member.model");
+const mongo = require("../../mongo");
+const User = require("../../models/discord-member.model");
 
 const add = async (discordUserId) => {
   await mongo().then(async (mongoose) => {

@@ -5,9 +5,9 @@ const getFiles = require("./getFiles");
 const remind = require("./remind");
 const verify = require("./verify");
 const { handleIdentify } = require("./utils/TLE");
-const getPrefix = require("./utils/getCommandPrefix");
+const getPrefix = require("./utils/db/getCommandPrefix");
 const reactionHandler = require("./utils/reactionHandler");
-const user = require("./utils/discordMemberHandlers");
+const user = require("./utils/db/discordMemberHandlers");
 const { addRole } = require("./utils/guildMemberHandlers");
 
 const bot = new Discord.Client({

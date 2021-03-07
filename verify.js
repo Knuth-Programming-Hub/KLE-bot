@@ -1,6 +1,6 @@
 var otpGenerator = require("otp-generator");
 var nodemailer = require("nodemailer");
-const user = require("./utils/discordMemberHandlers");
+const user = require("./utils/db/discordMemberHandlers");
 const { addRole, ban, removeRole } = require("./utils/guildMemberHandlers");
 
 const getInstructions = `**✨Hey! Welcome to the KPH server✨**

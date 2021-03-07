@@ -1,5 +1,5 @@
 const { addRole, hasRole, removeRole } = require("./guildMemberHandlers");
-const user = require("./discordMemberHandlers");
+const user = require("./db/discordMemberHandlers");
 
 const reactForMember = async (bot, discordUser, add) => {
   if (discordUser.bot === true) return;
