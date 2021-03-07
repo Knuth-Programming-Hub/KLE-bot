@@ -40,7 +40,8 @@ You can enter multiple batches!
       try {
         await User.find(filter).then(async (docs) => {
           for (let user of docs) {
-            if (user.cfHandle === undefined) continue;
+            if (user.cfHandle === undefined || user.isMember === false)
+              continue;
             let batch = user.batch === undefined ? "" : user.batch;
             list.push([user._id, user.cfHandle, 0, batch]);
           }
