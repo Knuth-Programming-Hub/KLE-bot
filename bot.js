@@ -8,6 +8,7 @@ const { handleIdentify } = require("./utils/TLE");
 const getPrefix = require("./utils/getCommandPrefix");
 const reactionHandler = require("./utils/reactionHandler");
 const user = require("./utils/discordMemberHandlers");
+const { addRole } = require("./utils/guildMemberHandlers");
 
 const bot = new Discord.Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
@@ -39,16 +40,22 @@ bot.on("guildMemberAdd", async (member) => {
       .setFooter(`Use ${prefix}help command to know more about me.`);
     channel.send(welcomeEmbed);
 
-    const exists = await user.existsInUsers(member.id);
-    if (exists === true) await user.updateIsMember(member.id, true);
+    const userObj = await user.existsInUsers(member.id);
+    if (userObj !== null) {
+      await user.updateIsMember(member.id, true);
+      if (userObj.batch !== undefined) {
+        addRole(bot, member.id, "JIITian");
+        addRole(bot, member.id, userObj.batch);
+      }
+    }
   } catch (error) {
     bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
   }
 });
 
 bot.on("guildMemberRemove", async (member) => {
-  const exists = await user.existsInUsers(member.id);
-  if (exists === true) await user.updateIsMember(member.id, false);
+  const userObj = await user.existsInUsers(member.id);
+  if (userObj !== null) await user.updateIsMember(member.id, false);
 });
 
 bot.on("ready", () => {

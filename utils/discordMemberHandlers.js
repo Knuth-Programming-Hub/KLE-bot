@@ -69,15 +69,15 @@ const updateIsMember = async (discordUserId, isMember) => {
 };
 
 const existsInUsers = async (discordUserId) => {
-  let exists = false;
+  let userObj = null;
 
   const mongoose = await mongo();
   await User.findById(discordUserId, (err, doc) => {
-    if (doc !== null) exists = true;
+    userObj = doc;
   });
   await mongoose.connection.close();
 
-  return exists;
+  return userObj;
 };
 
 const remove = async (discordUserId) => {
