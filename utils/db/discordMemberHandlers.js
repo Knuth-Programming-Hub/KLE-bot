@@ -1,12 +1,13 @@
-const mongo = require("../mongo");
-const User = require("../models/user.model");
+const mongo = require("../../mongo");
+const User = require("../../models/discord-member.model");
 
 const add = async (discordUserId) => {
   await mongo().then(async (mongoose) => {
     try {
       const newUser = new User({
-        discordId: discordUserId,
+        _id: discordUserId,
         failCount: 0,
+        isMember: true,
       });
 
       await newUser.save();
@@ -21,7 +22,7 @@ const updateFailCount = async (discordUserId) => {
   let count = null;
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOne({ discordId: discordUserId }, (err, doc) => {
+      await User.findById(discordUserId, (err, doc) => {
         if (doc !== null) {
           count = doc.failCount + 1;
         }
@@ -32,10 +33,7 @@ const updateFailCount = async (discordUserId) => {
   });
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOneAndUpdate(
-        { discordId: discordUserId },
-        { failCount: count }
-      );
+      await User.findByIdAndUpdate(discordUserId, { failCount: count });
     } finally {
       mongoose.connection.close();
     }
@@ -46,7 +44,7 @@ const updateFailCount = async (discordUserId) => {
 const updateCfHandle = async (discordUserId, cfHandle) => {
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOneAndUpdate({ discordId: discordUserId }, { cfHandle });
+      await User.findByIdAndUpdate(discordUserId, { cfHandle });
     } finally {
       mongoose.connection.close();
     }
@@ -57,33 +55,35 @@ const updateBatch = async (discordUserId, batch) => {
   batch = Number(batch);
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOneAndUpdate({ discordId: discordUserId }, { batch });
+      await User.findByIdAndUpdate(discordUserId, { batch });
     } finally {
       mongoose.connection.close();
     }
   });
 };
 
+const updateIsMember = async (discordUserId, isMember) => {
+  const mongoose = await mongo();
+  await User.findByIdAndUpdate(discordUserId, { isMember });
+  await mongoose.connection.close();
+};
+
 const existsInUsers = async (discordUserId) => {
-  let exists = false;
+  let userObj = null;
 
-  await mongo().then(async (mongoose) => {
-    try {
-      await User.findOne({ discordId: discordUserId }, (err, doc) => {
-        if (doc !== null) exists = true;
-      });
-    } finally {
-      mongoose.connection.close();
-    }
+  const mongoose = await mongo();
+  await User.findById(discordUserId, (err, doc) => {
+    userObj = doc;
   });
+  await mongoose.connection.close();
 
-  return exists;
+  return userObj;
 };
 
 const remove = async (discordUserId) => {
   await mongo().then(async (mongoose) => {
     try {
-      await User.findOneAndDelete({ discordId: discordUserId });
+      await User.findByIdAndDelete({ _id: discordUserId });
     } finally {
       mongoose.connection.close();
     }
@@ -95,6 +95,7 @@ module.exports = {
   updateFailCount,
   updateCfHandle,
   updateBatch,
+  updateIsMember,
   existsInUsers,
   remove,
 };

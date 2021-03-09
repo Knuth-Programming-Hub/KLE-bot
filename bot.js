@@ -5,8 +5,10 @@ const getFiles = require("./getFiles");
 const remind = require("./remind");
 const verify = require("./verify");
 const { handleIdentify } = require("./utils/TLE");
-const getPrefix = require("./utils/getCommandPrefix");
+const getPrefix = require("./utils/db/getCommandPrefix");
 const reactionHandler = require("./utils/reactionHandler");
+const user = require("./utils/db/discordMemberHandlers");
+const { addRole } = require("./utils/guildMemberHandlers");
 
 const bot = new Discord.Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
@@ -31,15 +33,29 @@ bot.on("guildMemberAdd", async (member) => {
       .setTitle(`Yay! ${name} you made it to KPH discord Server `)
       .setDescription(
         `
-I am your friendly bot written in Javascript.
-*If* you wish to be identified as a JIITian, please send ${prefix}verify in the #verify channel :D.
-`
+    I am your friendly bot written in Javascript.
+    *If* you wish to be identified as a JIITian, please send ${prefix}verify in the #verify channel :D.
+    `
       )
       .setFooter(`Use ${prefix}help command to know more about me.`);
     channel.send(welcomeEmbed);
+
+    const userObj = await user.existsInUsers(member.id);
+    if (userObj !== null) {
+      await user.updateIsMember(member.id, true);
+      if (userObj.batch !== undefined) {
+        addRole(bot, member.id, "JIITian");
+        addRole(bot, member.id, userObj.batch);
+      }
+    }
   } catch (error) {
     bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
   }
+});
+
+bot.on("guildMemberRemove", async (member) => {
+  const userObj = await user.existsInUsers(member.id);
+  if (userObj !== null) await user.updateIsMember(member.id, false);
 });
 
 bot.on("ready", () => {

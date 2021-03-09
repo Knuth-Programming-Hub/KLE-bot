@@ -1,5 +1,5 @@
 const { addRole, hasRole, removeRole } = require("./guildMemberHandlers");
-const user = require("./usersHandlers");
+const user = require("./db/discordMemberHandlers");
 
 const reactForMember = async (bot, discordUser, add) => {
   if (discordUser.bot === true) return;
@@ -9,8 +9,8 @@ const reactForMember = async (bot, discordUser, add) => {
   if (add === true) {
     if ((await hasRole(bot, discordUser, "Member")) === true) return;
     addRole(bot, discordUser, "Member");
-    const exists = await user.existsInUsers(discordUser.id);
-    if (exists === false) {
+    const userObj = await user.existsInUsers(discordUser.id);
+    if (userObj === null) {
       await user.add(discordUser.id);
     }
   } else {

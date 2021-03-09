@@ -1,5 +1,5 @@
 const mongo = require("../../mongo");
-const User = require("../../models/user.model");
+const User = require("../../models/discord-member.model");
 const axios = require("axios");
 
 // getting the ratings through the handles
@@ -40,9 +40,10 @@ You can enter multiple batches!
       try {
         await User.find(filter).then(async (docs) => {
           for (let user of docs) {
-            if (user.cfHandle === undefined) continue;
+            if (user.cfHandle === undefined || user.isMember === false)
+              continue;
             let batch = user.batch === undefined ? "" : user.batch;
-            list.push([user.discordId, user.cfHandle, 0, batch]);
+            list.push([user._id, user.cfHandle, 0, batch]);
           }
         });
       } finally {
