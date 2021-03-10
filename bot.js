@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 const getFiles = require("./getFiles");
 const remind = require("./remind");
 const verify = require("./verify");
-const { handleIdentify } = require("./utils/TLE");
+const tleHandler = require("./utils/TLE");
 const getPrefix = require("./utils/db/getCommandPrefix");
 const reactionHandler = require("./utils/reactionHandler");
 const user = require("./utils/db/discordMemberHandlers");
@@ -84,7 +84,7 @@ bot.on("message", async (message) => {
   if (message.channel.type === "dm") return;
 
   if (message.author.id === process.env.TLE_ID) {
-    handleIdentify(message);
+    tleHandler(message);
     return;
   }
 
