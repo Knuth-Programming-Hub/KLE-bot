@@ -9,14 +9,15 @@ const computeStartTime = (startTimeSeconds) => {
   return res;
 };
 
-const computeDuration = (durationSeconds) => {
-  const dateObj = new Date(durationSeconds * 1000);
-  let res = "";
-  if (dateObj.getDay() !== 0) res += `${dateObj.getDay()}d `;
-  if (res.length && dateObj.getHours() !== 0) res += `${dateObj.getHours()}h `;
-  if (res.length && dateObj.getMinutes() !== 0)
-    res += `${dateObj.getMinutes()}m `;
+const computeDuration = (seconds) => {
+  let days = Math.floor(seconds / (3600 * 24));
+  let hours = Math.floor((seconds % (3600 * 24)) / 3600);
+  let minutes = Math.floor((seconds % 3600) / 60);
 
+  let res = "";
+  if (days > 0) res += `${days}d `;
+  if (res.length || hours > 0) res += `${hours}h `;
+  res += `${minutes}m`;
   return res;
 };
 
