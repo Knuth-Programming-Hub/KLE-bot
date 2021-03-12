@@ -2,33 +2,8 @@ const makeRequest = require("../../api/codeforces");
 const { getUserFromCfHandle } = require("../../utils/db/discordMemberHandlers");
 const { getDateAndTime } = require("../../utils/getDateAndTime");
 
-const computeStartTime = (startTimeSeconds) => {
-  const dateObj = new Date(startTimeSeconds * 1000);
-  const dateAndTime = getDateAndTime(dateObj);
-  const res = `${dateAndTime[0]}, ${dateAndTime[1]}`;
-  return res;
-};
-
-const computeDuration = (seconds) => {
-  let days = Math.floor(seconds / (3600 * 24));
-  let hours = Math.floor((seconds % (3600 * 24)) / 3600);
-  let minutes = Math.floor((seconds % 3600) / 60);
-
-  let res = "";
-  if (days > 0) res += `${days}d `;
-  if (res.length || hours > 0) res += `${hours}h `;
-  res += `${minutes}m`;
-  return res;
-};
-
-const ranklistForContest = async (
-  message,
-  args,
-  userList,
-  contestId,
-  showUnofficial
-) => {
-  /* make the API request */
+// makes the API request for contest-standings
+const getStandingsFromCf = async (userList, contestId, showUnofficial) => {
   let handles = "";
   for (let elem in userList) {
     handles += `${elem};`;
@@ -51,10 +26,30 @@ const ranklistForContest = async (
   }
   if (res.data.status === "FAILED") throw new Error(res.data.comment);
 
-  const { result } = res.data;
+  return res;
+};
 
-  /* display contest info */
-  const { contest } = result;
+const computeStartTime = (startTimeSeconds) => {
+  const dateObj = new Date(startTimeSeconds * 1000);
+  const dateAndTime = getDateAndTime(dateObj);
+  const res = `${dateAndTime[0]}, ${dateAndTime[1]}`;
+  return res;
+};
+
+const computeDuration = (seconds) => {
+  let days = Math.floor(seconds / (3600 * 24));
+  let hours = Math.floor((seconds % (3600 * 24)) / 3600);
+  let minutes = Math.floor((seconds % 3600) / 60);
+
+  let res = "";
+  if (days > 0) res += `${days}d `;
+  if (res.length || hours > 0) res += `${hours}h `;
+  res += `${minutes}m`;
+  return res;
+};
+
+// displays basic contest info
+const displayContestInfo = (message, contest) => {
   let contestUrl = `https://codeforces.com/`;
   if (contest.preparedBy === "hp1999") contestUrl += "gym/";
   else contestUrl += "contest/";
@@ -79,11 +74,15 @@ const ranklistForContest = async (
       ],
     },
   });
+};
 
-  /* extract info for ranklist */
+// parses and computes ranklist data
+const computeRanklist = async (message, args, userList, result) => {
   const { rows } = result;
   const contestType = result.contest.type;
-  let resultList = [];
+
+  let resultList = []; // contains info for each participant/party
+
   for (let ranklistRow of rows) {
     // data for one "party"
     // note: there can be multiple members (in the case of a team)
@@ -167,14 +166,11 @@ const ranklistForContest = async (
     if (resultList.length >= 10) break;
   }
 
-  // no members took part in the contest...
-  if (resultList.length === 0) {
-    message.channel.send("No members found in the contest ranklist! 😅");
-    return;
-  }
+  return resultList;
+};
 
-  /* display */
-
+// diplays the ranklist
+const displayRanklist = (message, result, resultList) => {
   // header
   resultList.unshift({
     rank: "#",
@@ -200,6 +196,7 @@ const ranklistForContest = async (
 
   for (let problem of problems) maxWidth[problem.index] = 0;
 
+  const contestType = result.contest.type;
   for (let obj of resultList) {
     for (let [key, value] of Object.entries(obj)) {
       if (contestType !== "ICPC" && key === "penalty") continue; // if contest is not ICPC style then "penalty" field will not be displayed because then it will always be 0
@@ -283,6 +280,33 @@ const ranklistForContest = async (
   str += "```";
 
   message.channel.send(str);
+};
+
+const ranklistForContest = async (
+  message,
+  args,
+  userList,
+  contestId,
+  showUnofficial
+) => {
+  /* make the API request */
+  const res = await getStandingsFromCf(userList, contestId, showUnofficial);
+  const { result } = res.data;
+
+  /* display contest info */
+  displayContestInfo(message, result.contest);
+
+  /* parse and compute ranklist data */
+  const resultList = await computeRanklist(message, args, userList, result);
+
+  // no members took part in the contest...
+  if (resultList.length === 0) {
+    message.channel.send("No members found in the contest ranklist! 😅");
+    return;
+  }
+
+  /* display ranklist */
+  displayRanklist(message, result, resultList);
 };
 
 module.exports = ranklistForContest;
