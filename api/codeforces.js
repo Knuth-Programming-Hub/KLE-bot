@@ -3,7 +3,7 @@
 const crypto = require("crypto");
 const axios = require("axios");
 
-const makeRequest = async (methodName, params) => {
+const makeAttempt = async (methodName, params) => {
   let url = "https://codeforces.com/api/";
   url += `${methodName}?`;
 
@@ -31,7 +31,24 @@ const makeRequest = async (methodName, params) => {
 
   url += `apiSig=${rand}${apiSig}`;
 
-  const response = await axios.get(url);
+  let response = await axios.get(url);
+  return response;
+};
+
+const makeRequest = async (methodName, params) => {
+  let response = null;
+  for (let i = 0; i < 5; ++i) {
+    try {
+      response = await makeAttempt(methodName, params);
+    } catch (err) {
+      error = err;
+    }
+
+    if (response !== null) break;
+  }
+
+  if (response === null) throw new Error(error);
+
   return response;
 };
 

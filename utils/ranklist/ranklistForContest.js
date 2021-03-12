@@ -37,13 +37,18 @@ const ranklistForContest = async (
   if (showUnofficial === true) showUnofficial = "true";
   else showUnofficial = "false";
 
-  // https://codeforces.com/apiHelp/methods#contest.standings
-  const res = await makeRequest("contest.standings", [
-    ["contestId", contestId],
-    ["handles", handles],
-    ["showUnofficial", showUnofficial],
-  ]);
+  let res = null;
 
+  // https://codeforces.com/apiHelp/methods#contest.standings
+  try {
+    res = await makeRequest("contest.standings", [
+      ["contestId", contestId],
+      ["handles", handles],
+      ["showUnofficial", showUnofficial],
+    ]);
+  } catch (err) {
+    throw new Error(err);
+  }
   if (res.data.status === "FAILED") throw new Error(res.data.comment);
 
   const { result } = res.data;

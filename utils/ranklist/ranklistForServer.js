@@ -7,9 +7,14 @@ const getCfUserInfo = async (resultList) => {
     handles += `${elem[1]};`;
   }
 
-  // https://codeforces.com/apiHelp/methods#user.info
-  const res = await makeRequest("user.info", [["handles", handles]]);
+  let res = null;
 
+  // https://codeforces.com/apiHelp/methods#user.info
+  try {
+    res = await makeRequest("user.info", [["handles", handles]]);
+  } catch (err) {
+    throw new Error(err);
+  }
   if (res.data.status === "FAILED") throw new Error(res.data.comment);
 
   const { result } = res.data;
