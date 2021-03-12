@@ -1,6 +1,7 @@
 const makeRequest = require("../../api/codeforces");
 const { getUserFromCfHandle } = require("../../utils/db/discordMemberHandlers");
 const { getDateAndTime } = require("../../utils/getDateAndTime");
+const cfGroup = require("./cfGroupInfo");
 
 // makes the API request for contest-standings
 const getStandingsFromCf = async (userList, contestId, showUnofficial) => {
@@ -51,17 +52,25 @@ const computeDuration = (seconds) => {
 // displays basic contest info
 const displayContestInfo = (message, contest) => {
   let contestUrl = `https://codeforces.com/`;
-  if (contest.preparedBy === "hp1999") contestUrl += "gym/";
-  else contestUrl += "contest/";
-  contestUrl += contest.id;
+  let description = "";
+  if (
+    cfGroup.contestAuthors.find((elem) => elem === contest.preparedBy) !==
+    undefined
+  ) {
+    contestUrl += `group/${cfGroup.Id}/`;
+    description += `**${cfGroup.name}**\n\n`;
+  }
+  if (contest.description !== undefined) description += contest.description;
+  contestUrl += `contest/${contest.id}`;
   const startTime = computeStartTime(contest.startTimeSeconds);
   const duration = computeDuration(contest.durationSeconds);
+
   message.channel.send({
     embed: {
       title: contest.name,
       url: contestUrl,
       color: contest.phase === "FINISHED" ? 15158332 : 15844367,
-      description: contest.description,
+      description,
       fields: [
         {
           name: "Phase",
