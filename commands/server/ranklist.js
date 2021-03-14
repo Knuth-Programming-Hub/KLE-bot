@@ -1,41 +1,48 @@
 const mongo = require("../../mongo");
 const User = require("../../models/discord-member.model");
-const axios = require("axios");
+const ranklistForServer = require("../../utils/ranklist/ranklistForServer");
+const ranklistForContest = require("../../utils/ranklist/ranklistForContest");
 
-// getting the ratings through the handles
-const getCfUserInfo = async (list) => {
-  // https://codeforces.com/apiHelp/methods#user.info
-  let url = "https://codeforces.com/api/user.info?handles=";
-  for (let elem of list) {
-    url += `${elem[1]};`;
-  }
+// object with keys as cfHandles and values as objects with keys as "discordId", "batch"
+let userList;
 
-  await axios.get(url).then((res) => {
-    if (res.data.status === "FAILED") throw new Error(res.data.comment);
-
-    const { result } = res.data;
-    for (let i = 0; i < result.length; ++i) {
-      list[i][2] = result[i].rating;
-    }
-  });
-};
+const commandName = "ranklist";
 
 module.exports = {
-  name: "ranklist",
-  description: "Get ranklist for JIIT students",
+  name: commandName,
+  description: "Get ranklist for server and contests",
   usage: (prefix) => `\`\`\`
-${prefix}ranklist
-Format: ${prefix}ranklist [batch]
-You can enter multiple batches!
+${prefix}${commandName}\n
+Format: 
+${prefix}${commandName} [id=<contest-id>] [batches...]\n
+Note: 
+- To get unofficial standings use id#=<contest-id>
+- You can enter multiple batches.
+- To get the server ranklist, don't enter any arguments.\n
+Example:
+${prefix}${commandName} id=123 2021 2022
 \`\`\``,
   execute: async (bot, message, args, prefix) => {
+    let contestId = null;
+    let showUnofficial = false;
+    if (args.length > 0) {
+      if (args[0].startsWith("id=")) {
+        contestId = args[0].substring(3);
+        args = args.slice(1);
+      } else if (args[0].startsWith("id#=")) {
+        contestId = args[0].substring(4);
+        args = args.slice(1);
+        showUnofficial = true;
+      }
+    }
+
     for (let elem of args) elem = Number(elem);
 
     let filter = {};
     if (args.length > 0) filter = { batch: { $in: args } };
 
     // fetching users from the database
-    let list = [];
+    userList = {};
     await mongo().then(async (mongoose) => {
       try {
         await User.find(filter).then(async (docs) => {
@@ -47,7 +54,7 @@ You can enter multiple batches!
             )
               continue;
             let batch = user.batch === undefined ? "" : user.batch;
-            list.push([user._id, user.cfHandle, 0, batch]);
+            userList[user.cfHandle] = { discordId: user._id, batch };
           }
         });
       } finally {
@@ -55,61 +62,19 @@ You can enter multiple batches!
       }
     });
 
-    if (list.length === 0) {
+    if (Object.keys(userList).length === 0) {
       message.channel.send("No members found! 😅");
       return;
     }
 
-    await getCfUserInfo(list);
-
-    for (let arr of list) {
-      const member = await message.guild.members.fetch(arr[0]);
-      arr[0] = member.user.username;
-    }
-
-    list.sort((a, b) => b[2] - a[2]);
-    list = list.slice(0, Math.min(11, list.length)); // taking only top 10
-
-    // presentation
-    for (let i in list) {
-      list[i].unshift(Number(i) + 1);
-    }
-
-    list.unshift(["#", "Name", "Handle", "Rating", "Batch"]);
-
-    let maxWidth = Array(list[0].length).fill(0);
-    for (let arr of list) {
-      for (let i in maxWidth) {
-        let temp = `${arr[i]}`;
-        maxWidth[i] = Math.max(maxWidth[i], temp.length);
-      }
-    }
-
-    let str = "```\n";
-    for (let arr of list) {
-      for (let i in maxWidth) {
-        let temp = `${arr[i]}`;
-        str += temp;
-        for (let j = 0; j <= maxWidth[i] - temp.length; ++j) str += " ";
-      }
-      str += "\n";
-
-      if (arr[0] === "#") {
-        for (let i in maxWidth) {
-          for (let j = 0; j < maxWidth[i]; ++j) str += "-";
-          str += " ";
-        }
-        str += "\n";
-      }
-    }
-    str += "```";
-
-    // using "embed"
-    message.channel.send({
-      embed: {
-        color: 3447003,
-        description: `${str}`,
-      },
-    });
+    if (contestId !== null)
+      await ranklistForContest(
+        message,
+        args,
+        userList,
+        contestId,
+        showUnofficial
+      );
+    else await ranklistForServer(message, userList);
   },
 };

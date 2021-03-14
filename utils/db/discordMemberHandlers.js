@@ -17,6 +17,21 @@ const add = async (discordUserId) => {
   });
 };
 
+const getUserFromCfHandle = async (cfHandle) => {
+  let user = null;
+  await mongo().then(async (mongoose) => {
+    try {
+      await User.find({ cfHandle }, (err, doc) => {
+        if (doc !== null) user = doc;
+      });
+    } finally {
+      await mongoose.connection.close();
+    }
+  });
+
+  return user;
+};
+
 // I am using two DB calls here as I was unable to get the desired result with $inc
 const updateFailCount = async (discordUserId) => {
   let count = null;
@@ -92,6 +107,7 @@ const remove = async (discordUserId) => {
 
 module.exports = {
   add,
+  getUserFromCfHandle,
   updateFailCount,
   updateCfHandle,
   updateBatch,
