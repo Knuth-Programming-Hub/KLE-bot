@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 
 const parentName = "links";
-const name = "cfgroup";
+const name = "codeforces";
 
 module.exports = {
   parentName,
