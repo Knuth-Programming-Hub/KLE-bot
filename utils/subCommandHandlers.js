@@ -69,7 +69,7 @@ const getCommandObj = (name, description, isParent) => {
           );
         else {
           args.splice(0, 1);
-          subCommand.execute(bot, message, args, prefix);
+          await subCommand.execute(bot, message, args, prefix);
         }
       }
     },
