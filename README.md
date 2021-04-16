@@ -1,22 +1,27 @@
 # KLE Discord Bot
 
-KLE is a chat bot for the Knuth Programming Hub Discord server.
+KLE is a chat bot for the Knuth Programming Hub (KPH) Discord server.
 The purpose of this bot is to automate various tasks of the Hub and at the same time improve the Competitve Programming culture in the college.
 
 ## Features
 
-- [x] KPH links
+- [x] Providing links related to KPH's online presence
 - [x] Managing Meetups/Events
 - [x] Identifying and Verifying [JIIT](http://www.jiit.ac.in/) students
-- [x] Creating link for a particular code
-- [x] Year-wise ranklists
+- [x] Year-wise ranklists for the Discord server
+- [x] Standings for Codeforces contests (KPH's Codeforces group contests included)
+- [x] Sending invite to join KPH Codeforces group
+- [x] Creating GitHub gist for a particular code
+- [x] Granting "Member" role on reacting to a particular message
 - [x] Custom command prefix
+- [x] Clearing recent messages in a channel
 
 ## Future Prospects
 
-- Generating data for members' performances in CF contests
+- Automating tasks related to KPH's Codeforces group
+- Commands related to Codeforces handles
+- Generating data for members' performances in Codeforces contests
 - Connecting to the Telegram group
-- Accepting/Rejecting requests on the CF group
 - Managing Polls
 
 ## How to Get Started
