@@ -44,6 +44,7 @@ For an illustrated guide, refer [this](https://github.com/reactiflux/discord-irc
 - Create a New Application.
 - Click on Add Bot in the Bot section.
 - You’ll get your _Bot API token_ under the token title.
+- Enable _Presence Intent_ and _Server Members Intent_.
 
 ### Add bot to yout Test Server
 
@@ -54,7 +55,8 @@ For an illustrated guide, refer [this](https://github.com/reactiflux/discord-irc
 
 ### .env file
 
-For the environment variables, create a _.env_ file.
+For the environment variables, create a `.env` file. <br>
+You may rename the [`.env.example`](.env.example) file to .`env` and fill the values accordingly, instead.
 
 **Note: Specify the environment variables according to your need i.e. you might not require some of them depending upon your use-case. To help you, for each environment variable, the reasons and references for it have been provided here.**
 
@@ -86,18 +88,31 @@ mongoPath = "mongodb://localhost:27017/<Your-DB-Name>"
 To get the Server, Channel and User IDs on Discord, refer this [article](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID).
 
 - The Server ID is required to handle many server-related actions.
+
   ```
   SERVER_GUILD_ID = <Your-Test-Server-ID>
   ```
+
 - Currently, as part of the "JIITian-verification-process", the bot only allow members to initiate the process through a specific channel on the server.
+
   ```
   VERIFY_CHANNEL_ID = <Verify-Channel-ID>
   ```
+
 - In case there is any error, the bot logs the error message to a specified channel on the server.
+
   ```
   ERROR_LOG_CHANNEL = <Error-Log-Channel-ID>
   ```
+
+- To get the "Member" role and view the other channels, members have to _react to any message_ on a specified channel.
+
+  ```
+  RULES_CHANNEL_ID = <Rules-Channel-ID>
+  ```
+
 - To link Discord usernames to CF handles the bot depends upon the [TLE bot](https://github.com/cheran-senthil/TLE). This also means that you require TLE to be in your Test server for accomplishing this task.
+
   ```
   TLE_ID = <TLE-Bot-Discord-User-ID>
   ```
@@ -127,13 +142,25 @@ GITHUB_TOKEN = <GitHub-Token>
 
 </details>
 
+<details>
+  <summary>Codeforces API key and secret</summary>
+
+The bot fetches the ranklist of Codeforces contests using the Codeforces API. Follow the steps provided [here](https://codeforces.com/apiHelp) to generate the key and the secret.
+
+```
+CF_API_KEY = <Codeforces-API-key>
+CF_API_SECRET = <Codeforces-API-Secret>
+```
+
+</details>
+
 ### Build & Execute the bot
 
 - Run following commands from the terminal.
 
 ```
-    npm install
-    npm start
+npm install
+npm start
 ```
 
 - The bot will become online on your Test Server!
