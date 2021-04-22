@@ -22,10 +22,16 @@ e.g. if OTP is 123456, send /123456.
 
 const sendMail = async (email) => {
   let mailTransporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
+      type: "OAuth2",
       user: process.env.SENDER_MAIL_ID,
-      pass: process.env.SENDER_PASSWORD,
+      clientId: process.env.OAUTH_CLIENT_ID,
+      clientSecret: process.env.OAUTH_CLIENT_SECRET,
+      refreshToken: process.env.OAUTH_REFRESH_TOKEN,
+      accessToken: process.env.OAUTH_ACCESS_TOKEN,
     },
   });
 
@@ -50,6 +56,8 @@ If you didn't request for it, then please ignore this mail.`,
       OTP = null;
     }
   );
+
+  mailTransporter.close();
 
   return OTP;
 };
@@ -148,7 +156,6 @@ module.exports = async (bot, discordUser, prefix) => {
           dmChannel.send(
             `It seems that there was some error. Send ${prefix}verify on the server to try again.`
           );
-          handleFail(bot, dmChannel, discordUser.id);
         }
       })
       .catch((err) => {
