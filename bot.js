@@ -81,48 +81,54 @@ setInterval(async () => {
 }, 3000000);
 
 bot.on("message", async (message) => {
-  if (message.channel.type === "dm") return;
-
-  if (message.author.id === process.env.TLE_ID) {
-    tleHandler(message);
-    return;
-  }
-
-  const prefix = await getPrefix();
-  if (!message.content.startsWith(prefix)) return;
-
-  const args = message.content
-    .slice(prefix.length)
-    .trim()
-    .split(/\r\n|\r|\n| +/); // removes any whitespace in the message
-  const command = args.shift().toLowerCase();
-
-  if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
-    if (command === "verify") {
-      try {
-        await verify(bot, message.author, prefix);
-      } catch (error) {
-        bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
-      }
-    }
-    if (command !== "clearchannel") return;
-  }
-
-  // command is not present or it is a subcommand
-  if (
-    !bot.commands.has(command) ||
-    bot.commands.get(command).parentName !== undefined
-  ) {
-    bot.commands.get("invalid").execute(bot, message, args, prefix);
-    return;
-  }
-
-  // execute the command
   try {
-    await bot.commands.get(command).execute(bot, message, args, prefix);
+    if (message.channel.type === "dm") return;
+
+    if (message.author.id === process.env.TLE_ID) {
+      tleHandler(message);
+      return;
+    }
+
+    const prefix = await getPrefix();
+    if (!message.content.startsWith(prefix)) return;
+
+    const args = message.content
+      .slice(prefix.length)
+      .trim()
+      .split(/\r\n|\r|\n| +/); // removes any whitespace in the message
+    const command = args.shift().toLowerCase();
+
+    if (message.channel.id === process.env.VERIFY_CHANNEL_ID) {
+      if (command === "verify") {
+        try {
+          await verify(bot, message.author, prefix);
+        } catch (error) {
+          bot.channels.cache
+            .get(process.env.ERROR_LOG_CHANNEL)
+            .send(error.stack);
+        }
+      }
+      if (command !== "clearchannel") return;
+    }
+
+    // command is not present or it is a subcommand
+    if (
+      !bot.commands.has(command) ||
+      bot.commands.get(command).parentName !== undefined
+    ) {
+      bot.commands.get("invalid").execute(bot, message, args, prefix);
+      return;
+    }
+
+    // execute the command
+    try {
+      await bot.commands.get(command).execute(bot, message, args, prefix);
+    } catch (error) {
+      bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
+      message.reply("There was some error in executing that command! 🙁");
+    }
   } catch (error) {
     bot.channels.cache.get(process.env.ERROR_LOG_CHANNEL).send(error.stack);
-    message.reply("There was some error in executing that command! 🙁");
   }
 });
 
