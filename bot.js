@@ -20,7 +20,7 @@ bot.on("guildMemberAdd", async (member) => {
     if (member.user.bot === true) return;
 
     const channel = member.guild.channels.cache.find(
-      (ch) => ch.name === "welcome"
+      (ch) => ch.id === process.env.WELCOME_CHANNEL_ID
     );
 
     if (!channel) return;
@@ -30,11 +30,11 @@ bot.on("guildMemberAdd", async (member) => {
     let name = member.user.username;
     let welcomeEmbed = new Discord.MessageEmbed()
       .setColor("#176ffc")
-      .setTitle(`Yay! ${name} you made it to KPH discord Server `)
+      .setTitle(`Yay! ${name} you made it to KPH Discord Server `)
       .setDescription(
         `
-    I am your friendly bot written in Javascript.
-    *If* you wish to be identified as a JIITian, please send ${prefix}verify in the #verify channel :D.
+    I am KLE, a bot specially designed for this server!
+    Head to <#${process.env.RULES_CHANNEL_ID}> to get the Member role.
     `
       )
       .setFooter(`Use ${prefix}help command to know more about me.`);
